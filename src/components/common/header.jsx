@@ -1,100 +1,46 @@
-import { useState } from "react";
-import { LucideMenu } from "lucide-react"; // optional icon for mobile menu
+import { Bell, ChevronDown } from "lucide-react";
 
 export const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-purple-500 text-white font-bold rounded-full flex items-center justify-center">
-            S
-          </div>
-          <span className="text-xl font-semibold text-gray-800 dark:text-white">
-            SmartTask
-          </span>
-        </div>
-
-        {/* Navigation Links */}
-        <nav className="hidden md:flex gap-6">
-          <a
-            href="/dashboard"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 dark:hover:text-purple-400 transition"
-          >
-            Dashboard
-          </a>
-          <a
-            href="/tasks"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 dark:hover:text-purple-400 transition"
-          >
-            Tasks
-          </a>
-          <a
-            href="/analytics"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 dark:hover:text-purple-400 transition"
-          >
-            Analytics
-          </a>
-          <a
-            href="/settings"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 dark:hover:text-purple-400 transition"
-          >
-            Settings
-          </a>
-        </nav>
-
-        {/* User / Profile */}
-        <div className="flex items-center gap-4">
-          <button className="hidden md:block px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">
-            + New Task
-          </button>
-
-          {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-200 font-semibold cursor-pointer">
-            U
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <LucideMenu className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-          </button>
+    <header className="w-[98%] h-18 flex items-center px-4 md:px-8 rounded-3xl bg-[#C6532A] mt-1 ml-2 mx-auto">
+      {/* Search bar */}
+      <div className="flex-1 flex items-center">
+        <div className="flex items-center bg-[#F0F0F0] rounded-full px-4 py-2 w-full max-w-[340px] h-10">
+          <input
+            type="text"
+            placeholder="Type here to search"
+            className="bg-transparent outline-none text-[#232323] placeholder-gray-500 w-full text-sm"
+            style={{ letterSpacing: "0.01em" }}
+          />
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <nav className="md:hidden bg-white dark:bg-gray-800 shadow-inner px-6 py-4 flex flex-col gap-4">
-          <a
-            href="/dashboard"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 transition"
-          >
-            Dashboard
-          </a>
-          <a
-            href="/tasks"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 transition"
-          >
-            Tasks
-          </a>
-          <a
-            href="/analytics"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 transition"
-          >
-            Analytics
-          </a>
-          <a
-            href="/settings"
-            className="text-gray-700 dark:text-gray-200 hover:text-purple-500 transition"
-          >
-            Settings
-          </a>
-        </nav>
-      )}
+      {/* Notification bell */}
+      <div className="flex items-center mx-4">
+        <button className="relative p-2 rounded-full hover:bg-[#DF5B28] cursor-pointer transition">
+          <Bell className="w-6 h-6 text-white" />
+          {/* Notification dot (optional) */}
+          {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span> */}
+        </button>
+      </div>
+
+      {/* User profile */}
+      <div className="flex items-center gap-2 min-w-[180px] justify-end">
+        <div className="w-8 h-8 rounded-full border-2 border-[#ff5c1a] flex items-center justify-center overflow-hidden">
+          <img
+            src="https://randomuser.me/api/portraits/men/32.jpg"
+            alt="Muhammad Umair"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex flex-col items-start justify-center leading-tight">
+          <span className="text-sm font-medium text-white">Muhammad Umair</span>
+          <span className="text-[11px] text-white px-2 mt-0.5 border border-[#020202]/60 rounded-full p-0.5">
+            Manager
+          </span>
+        </div>
+        <ChevronDown className="w-5 h-5 text-white ml-1" />
+      </div>
     </header>
   );
 };

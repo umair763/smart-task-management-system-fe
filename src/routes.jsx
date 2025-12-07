@@ -7,6 +7,9 @@ import {
   DashboardPage,
   LandingPage,
   NotFoundPage,
+  TasksPage,
+  AnalyticsPage,
+  Settings,
 } from "./pages";
 
 export const routes = createBrowserRouter([
@@ -32,6 +35,18 @@ export const routes = createBrowserRouter([
       {
         path: "/dashboard",
         element: <DashboardPage />,
+      },
+      {
+        path: "/tasks",
+        element: <TasksPage />,
+      },
+      {
+        path: "/analytics",
+        element: <AnalyticsPage />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
       },
     ],
   },

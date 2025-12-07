@@ -10,7 +10,7 @@ export const MainLayout = () => {
   // if (location.pathname === "/") return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="min-h-screen dark:bg-[#484444] dark:text-white bg-purple-100">
+    <div className="min-h-screen bg-[#C6532A]/35">
       {/* Two-column layout: left = sidebar (fixed full height), right = header + content */}
       <div className="flex w-full">
         {/* Sidebar: fixed full height, no vertical scroll */}
@@ -19,14 +19,17 @@ export const MainLayout = () => {
         </div>
 
         {/* Right column: header at top, outlet/main fills remaining space */}
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div
+          className="flex-1 flex flex-col min-h-screen"
+          style={{ marginLeft: "var(--sidebar-width, 15rem)" }}
+        >
           <Header />
 
-          <main className="flex-1 p-5 lg:p-6 w-full min-w-0 overflow-auto">
+          <main className="flex-1 p-1 lg:p-3 w-full min-w-0">
             <Outlet />
           </main>
 
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
     </div>
