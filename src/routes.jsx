@@ -1,9 +1,19 @@
+import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { MainLayout } from "./components/layout/main.layout";
-import { LoginPage, RegisterPage } from "./pages";
+import {
+  LoginPage,
+  RegisterPage,
+  DashboardPage,
+  LandingPage,
+  NotFoundPage,
+} from "./pages";
 
 export const routes = createBrowserRouter([
-  { path: "*", element: <NotFoundPage /> },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
   {
     path: "/",
     element: <LandingPage />,
@@ -16,7 +26,6 @@ export const routes = createBrowserRouter([
     path: "/signup",
     element: <RegisterPage />,
   },
-
   {
     element: <MainLayout />,
     children: [

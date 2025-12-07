@@ -10,11 +10,11 @@ function App() {
   return (
     <>
       <RouterProvider router={routes} />
-
       <ToastContainer position="top-right" autoClose={3000} />
       <Preloader />
     </>
   );
+
 }
 
 export default App;
