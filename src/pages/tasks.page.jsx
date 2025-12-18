@@ -8,11 +8,13 @@ import {
   Check,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AddTaskMenu } from "../features";
 
 export const TasksPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [expandedTasks, setExpandedTasks] = useState(new Set());
   const [tasks, setTasks] = useState(null);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
   // Initialize tasks data
   const taskGroups = tasks || [
@@ -259,6 +261,40 @@ export const TasksPage = () => {
     });
   };
 
+  const handleSaveTask = (newTask) => {
+    // In a real app, this would save to backend
+    console.log("New task created:", newTask);
+
+    // Add to the first group (New tasks) for demo purposes
+    const taskData = {
+      id: Date.now(),
+      title: newTask.title,
+      status: "New",
+      progress: 0,
+      days: 1,
+      users: 1,
+      completed: false,
+      subtasks: newTask.subtasks.map((st) => ({
+        ...st,
+        progress: 0,
+      })),
+      attachments: newTask.attachments,
+    };
+
+    setTasks((prevTasks) => {
+      if (!prevTasks) return prevTasks;
+
+      const updatedTasks = [...prevTasks];
+      updatedTasks[0] = {
+        ...updatedTasks[0],
+        tasks: [taskData, ...updatedTasks[0].tasks],
+      };
+      return updatedTasks;
+    });
+
+    setIsAddTaskOpen(false);
+  };
+
   return (
     <div className="">
       <div className="max-w-7xl mx-auto">
@@ -273,7 +309,10 @@ export const TasksPage = () => {
                 <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Share</span>
               </button>
-              <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <button
+                onClick={() => setIsAddTaskOpen(true)}
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
                 <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span>Create</span>
               </button>
@@ -344,6 +383,13 @@ export const TasksPage = () => {
           ))}
         </div>
       </div>
+
+      {/* Add Task Menu */}
+      <AddTaskMenu
+        isOpen={isAddTaskOpen}
+        onClose={() => setIsAddTaskOpen(false)}
+        onSave={handleSaveTask}
+      />
     </div>
   );
 };
@@ -565,7 +611,7 @@ const TaskRow = ({
           {[...Array(task.users)].map((_, i) => (
             <div
               key={i}
-              className= " w-5 h-5 rounded-full bg-blue-600 border border-white flex items-center justify-center text-white text-[9px] font-medium"
+              className=" w-5 h-5 rounded-full bg-blue-600 border border-white flex items-center justify-center text-white text-[9px] font-medium"
             >
               {String.fromCharCode(65 + i)}
             </div>
