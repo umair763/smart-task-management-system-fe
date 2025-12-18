@@ -13,7 +13,7 @@ import {
 
 function StatCard({ title, value, delta }) {
   return (
-    <div className="bg-[rgba(255,255,255,0.03)] border border-white/5 rounded-2xl p-4 w-full">
+    <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-4 w-full">
       <div className="flex items-center justify-between">
         <div>
           <div className="text-sm text-gray-300">{title}</div>
@@ -110,12 +110,12 @@ export const DashboardPage = () => {
   }, []);
 
   return (
-    <div className="w-full mx-auto bg-[#C6532A] p-4 rounded-3xl text-white">
+    <div className="w-full mx-auto p-4 rounded-3xl text-gray-700">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-gray-200">
+          <h1 className="text-2xl font-bold ">Dashboard</h1>
+          <p className="text-sm text-gray-600">
             Track team performance & project insights at a glance.
           </p>
         </div>
@@ -135,7 +135,7 @@ export const DashboardPage = () => {
       {/* Main panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Productivity */}
-        <div className="bg-[rgba(255,255,255,0.02)] border border-white/5 rounded-2xl p-6">
+        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg text-white font-semibold">Productivity</h3>
             <div className="text-sm text-gray-400">This Week</div>
@@ -147,7 +147,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Right: Task Overview (donut) */}
-        <div className="bg-[rgba(255,255,255,0.02)] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
+        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
           <h3 className="text-lg text-white font-semibold mb-4 self-start">
             Task Overview
           </h3>
@@ -181,7 +181,7 @@ export const DashboardPage = () => {
 
       {/* Bottom row: Top performer & Upcoming */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <div className="bg-[rgba(255,255,255,0.02)] border border-white/5 rounded-2xl p-6 flex gap-6 items-center">
+        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6 flex gap-6 items-center">
           <div className="w-20 h-20 rounded-full overflow-hidden">
             <img
               src="https://randomuser.me/api/portraits/women/44.jpg"
@@ -220,7 +220,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="bg-[rgba(255,255,255,0.02)] border border-white/5 rounded-2xl p-6">
+        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6">
           <h3 className="text-white font-semibold mb-4">Upcoming deadline</h3>
           <div className="space-y-4">
             <div>
