@@ -1,49 +1,38 @@
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useGetAllTasksQuery } from "../store/tasks.api";
 
 export const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(
-    new Date(2025, new Date().getMonth(), 1)
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
 
-  // Dummy tasks data for demonstration
-  const dummyTasks = [
-    {
-      id: 1,
-      title: "Complete project proposal",
-      scheduledDate: new Date(2025, currentMonth.getMonth(), 5),
-      priority: "high",
-      taskCount: 3,
-    },
-    {
-      id: 2,
-      title: "Review team feedback",
-      scheduledDate: new Date(2025, currentMonth.getMonth(), 5),
-      priority: "medium",
-      taskCount: 1,
-    },
-    {
-      id: 3,
-      title: "Update documentation",
-      scheduledDate: new Date(2025, currentMonth.getMonth(), 12),
-      priority: "low",
-      taskCount: 2,
-    },
-    {
-      id: 4,
-      title: "Client meeting",
-      scheduledDate: new Date(2025, currentMonth.getMonth(), 18),
-      priority: "high",
-      taskCount: 1,
-    },
-    {
-      id: 5,
-      title: "Code review session",
-      scheduledDate: new Date(2025, currentMonth.getMonth(), 22),
-      priority: "medium",
-      taskCount: 4,
-    },
-  ];
+  const { data: apiTasks } = useGetAllTasksQuery();
+
+  const extractTasksArray = (response) => {
+    if (!response) return [];
+    if (Array.isArray(response)) return response;
+    if (Array.isArray(response.data)) return response.data;
+    if (Array.isArray(response.tasks)) return response.tasks;
+    if (response.data && Array.isArray(response.data.tasks)) {
+      return response.data.tasks;
+    }
+    return [];
+  };
+
+  const coerceDate = (value) => {
+    if (!value) return null;
+    const d = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(d.getTime()) ? null : d;
+  };
+
+  const normalizePriority = (priority) => {
+    const p = String(priority || "").toLowerCase();
+    if (p === "urgent" || p === "high") return "high";
+    if (p === "medium" || p === "normal") return "medium";
+    if (p === "low") return "low";
+    return "unknown";
+  };
 
   // Priority badge styling
   const getPriorityBadge = (priority) => {
@@ -74,9 +63,18 @@ export const Calendar = () => {
   const scheduledDates = useMemo(() => {
     const dates = {};
 
-    dummyTasks.forEach((task) => {
-      if (task.scheduledDate) {
-        const scheduledDate = new Date(task.scheduledDate);
+    const tasksArray = extractTasksArray(apiTasks);
+
+    tasksArray.forEach((task) => {
+      const scheduledDate =
+        coerceDate(task?.scheduledDate) ||
+        coerceDate(task?.dueDate) ||
+        coerceDate(task?.deadline) ||
+        coerceDate(task?.date) ||
+        coerceDate(task?.createdAt);
+
+      if (scheduledDate) {
+        const normalizedPriority = normalizePriority(task?.priority);
 
         // Only include tasks from the current month/year
         if (
@@ -91,14 +89,15 @@ export const Calendar = () => {
             };
           }
 
-          dates[day].tasks.push(task.taskCount);
-          dates[day].priorities.push(task.priority);
+          // Each task counts as 1 item on the calendar day cell
+          dates[day].tasks.push(1);
+          dates[day].priorities.push(normalizedPriority);
         }
       }
     });
 
     return dates;
-  }, [currentMonth]);
+  }, [apiTasks, currentMonth]);
 
   const days = [];
 
