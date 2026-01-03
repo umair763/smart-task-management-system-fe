@@ -1,11 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { User, Lock, Bell, Eye, EyeOff, Camera } from "lucide-react";
+import {
+  useUpdateUserMutation,
+  useGetCurrentUserQuery,
+  updateUserData,
+} from "../store";
+import { toast } from "react-toastify";
+import { en } from "zod/v4/locales";
 
 export const Settings = () => {
-  const [activeTab, setActiveTab] = useState("password");
+  const [activeTab, setActiveTab] = useState("profile");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const API_ORIGIN = import.meta.env.VITE_API_URL;
+  const API_PREFIX = "/api/v1";
+
+  const SERVER_ORIGIN = (() => {
+    try {
+      return new URL(API_ORIGIN).origin;
+    } catch {
+      return "http://localhost:3000";
+    }
+  })();
+
+  const normalizeUploadPath = (path) => {
+    if (!path || typeof path !== "string") return path;
+
+    // Backend sometimes returns api/v1/uploads/... but uploads are typically served at /uploads/...
+    // Normalize to avoid 404s like http://localhost:3000/api/v1/uploads/...
+    if (path.startsWith(`${API_PREFIX}/uploads/`)) {
+      return path.replace(`${API_PREFIX}/uploads/`, "/uploads/");
+    }
+    if (path.startsWith("api/v1/uploads/")) {
+      return path.replace("api/v1/uploads/", "uploads/");
+    }
+    if (path.includes("/api/v1/uploads/")) {
+      return path.replace("/api/v1/uploads/", "/uploads/");
+    }
+
+    return path;
+  };
+
+  const toAbsoluteUrl = (maybeUrl) => {
+    if (!maybeUrl || typeof maybeUrl !== "string") return null;
+    const normalized = normalizeUploadPath(maybeUrl);
+    if (maybeUrl.startsWith("data:")) return maybeUrl;
+    if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+      return normalized;
+    }
+    if (normalized.startsWith("/")) return `${SERVER_ORIGIN}${normalized}`;
+    return `${SERVER_ORIGIN}/${normalized}`;
+  };
+
+  // Get current user from Redux state
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  // Redux API hooks
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+  const {
+    data: currentUser,
+    isLoading: isLoadingUser,
+    refetch,
+  } = useGetCurrentUserQuery(undefined, {
+    skip: !user,
+    refetchOnMountOrArgChange: true,
+  });
 
   // Password form state
   const [passwordForm, setPasswordForm] = useState({
@@ -14,15 +77,50 @@ export const Settings = () => {
     confirmPassword: "",
   });
 
-  // Profile form state
+  // Profile form state - initialize with user data
   const [profileForm, setProfileForm] = useState({
-    fullName: "Sarah Johnson",
-    email: "sarahjohnson@gmail.com",
-    phone: "+1 (555) 123-4567",
-    jobTitle: "Product Manager",
-    department: "Product",
-    location: "San Francisco, CA",
+    firstName: "",
+    lastName: "",
+    username: "",
+    title: "",
+    email: "",
+    description: "",
   });
+
+  // Profile image state
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [profileImageLoadError, setProfileImageLoadError] = useState(false);
+
+  // Update form when user data is loaded
+  useEffect(() => {
+    const currentUserValue =
+      currentUser?.user || currentUser?.data?.user || currentUser;
+    const userData = currentUserValue || user;
+    console.log("Settings - User Data:", userData); // Debug log
+
+    if (userData) {
+      setProfileForm({
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        username: userData.username || "",
+        title: userData.title || "",
+        email: userData.email || "",
+        description: userData.bio || userData.description || "",
+      });
+
+      // Set profile image if available - check multiple possible field names
+      const imageUrl =
+        userData.profileImage ||
+        userData.avatar ||
+        userData.image ||
+        userData.photo;
+      if (imageUrl) {
+        setProfileImagePreview(toAbsoluteUrl(imageUrl));
+        setProfileImageLoadError(false);
+      }
+    }
+  }, [currentUser, user]);
 
   // Notification settings state
   const [notificationSettings, setNotificationSettings] = useState({
@@ -64,10 +162,52 @@ export const Settings = () => {
     });
   };
 
-  const handleProfileSubmit = (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    console.log("Profile update:", profileForm);
-    alert("Profile updated successfully!");
+
+    if (!user?._id && !user?.id) {
+      toast.error("User ID not found. Please login again.");
+      return;
+    }
+
+    try {
+      const userId = user._id || user.id;
+
+      // Prepare form data
+      const updateData = {
+        id: userId,
+        firstName: profileForm.firstName,
+        lastName: profileForm.lastName,
+        username: profileForm.username,
+        title: profileForm.title,
+        email: profileForm.email,
+        bio: profileForm.description,
+      };
+
+      // If there's a new profile image, include it
+      if (profileImage) {
+        // Note: The API expects the image as a field
+        // You may need to adjust based on your backend implementation
+        updateData.profileImage = profileImage;
+      }
+
+      const response = await updateUser(updateData).unwrap();
+
+      const updatedUser = response?.user || response?.data?.user || response;
+
+      // Update Redux state with new user data
+      dispatch(updateUserData(updatedUser || updateData));
+
+      // Clear the stored image file after successful upload
+      setProfileImage(null);
+
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      toast.error(
+        error?.data?.message || "Failed to update profile. Please try again."
+      );
+    }
   };
 
   const handleNotificationToggle = (category, setting) => {
@@ -80,11 +220,73 @@ export const Settings = () => {
     }));
   };
 
-  const handleProfileImageChange = (e) => {
+  const handleProfileImageChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Handle image upload
-      console.log("New profile image:", file);
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file");
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+
+      // Create preview URL immediately
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImagePreview(reader.result);
+        setProfileImageLoadError(false);
+      };
+      reader.readAsDataURL(file);
+
+      // Upload the image immediately
+      if (!user?._id && !user?.id) {
+        toast.error("User ID not found. Please login again.");
+        return;
+      }
+
+      try {
+        toast.info("Uploading image...");
+
+        const userId = user._id || user.id;
+
+        const response = await updateUser({
+          id: userId,
+          profileImage: file,
+        }).unwrap();
+
+        const updatedUser = response?.user || response?.data?.user || response;
+
+        // Update Redux state with new user data
+        if (updatedUser) {
+          dispatch(updateUserData(updatedUser));
+          const nextImageUrl =
+            updatedUser.profileImage ||
+            updatedUser.avatar ||
+            updatedUser.image ||
+            updatedUser.photo;
+          if (nextImageUrl) {
+            setProfileImagePreview(toAbsoluteUrl(nextImageUrl));
+            setProfileImageLoadError(false);
+          }
+        }
+
+        toast.success("Profile image updated successfully!");
+      } catch (error) {
+        console.error("Image upload failed:", error);
+        toast.error(
+          error?.data?.message || "Failed to upload image. Please try again."
+        );
+        // Reset preview on error
+        setProfileImagePreview(
+          toAbsoluteUrl(user?.profileImage || user?.avatar || null)
+        );
+        setProfileImageLoadError(false);
+      }
     }
   };
 
@@ -98,11 +300,48 @@ export const Settings = () => {
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="relative group">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop"
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+                  {(() => {
+                    const currentUserValue =
+                      currentUser?.user ||
+                      currentUser?.data?.user ||
+                      currentUser;
+                    const userData = currentUserValue || user;
+                    const candidateUrl =
+                      profileImagePreview ||
+                      toAbsoluteUrl(
+                        userData?.profileImage ||
+                          userData?.avatar ||
+                          userData?.image ||
+                          userData?.photo
+                      );
+
+                    if (candidateUrl && !profileImageLoadError) {
+                      return (
+                        <img
+                          src={candidateUrl}
+                          alt="Profile"
+                          crossOrigin="anonymous"
+                          className="w-full h-full object-cover"
+                          onError={() => {
+                            console.error(
+                              "Image failed to load:",
+                              candidateUrl
+                            );
+                            setProfileImageLoadError(true);
+                            setProfileImagePreview(null);
+                          }}
+                        />
+                      );
+                    }
+
+                    return (
+                      <span className="text-white text-xl sm:text-2xl md:text-3xl font-bold">
+                        {userData?.firstName?.[0]?.toUpperCase() ||
+                          userData?.username?.[0]?.toUpperCase() ||
+                          "U"}
+                      </span>
+                    );
+                  })()}
                 </div>
                 <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                   <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -116,10 +355,29 @@ export const Settings = () => {
               </div>
               <div>
                 <h1 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900">
-                  Settings
+                  {(() => {
+                    const currentUserValue =
+                      currentUser?.user ||
+                      currentUser?.data?.user ||
+                      currentUser;
+                    const userData = currentUserValue || user;
+                    return (
+                      userData?.username ||
+                      userData?.firstName ||
+                      profileForm.username ||
+                      "User"
+                    );
+                  })()}
                 </h1>
                 <p className="text-xs sm:text-sm text-gray-600 truncate max-w-[200px] sm:max-w-none">
-                  {profileForm.email}
+                  {(() => {
+                    const currentUserValue =
+                      currentUser?.user ||
+                      currentUser?.data?.user ||
+                      currentUser;
+                    const userData = currentUserValue || user;
+                    return userData?.email || profileForm.email;
+                  })()}
                 </p>
               </div>
             </div>
@@ -178,22 +436,79 @@ export const Settings = () => {
                   className="space-y-4 sm:space-y-6"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-5">
-                    {/* Full Name */}
+                    {/* First Name */}
                     <div>
                       <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                        Full Name
+                        First Name
                       </label>
                       <input
                         type="text"
-                        value={profileForm.fullName}
+                        value={profileForm.firstName}
                         onChange={(e) =>
                           setProfileForm({
                             ...profileForm,
-                            fullName: e.target.value,
+                            firstName: e.target.value,
                           })
                         }
                         className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                         required
+                      />
+                    </div>
+
+                    {/* Last Name */}
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.lastName}
+                        onChange={(e) =>
+                          setProfileForm({
+                            ...profileForm,
+                            lastName: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        required
+                      />
+                    </div>
+
+                    {/* Username */}
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.username}
+                        onChange={(e) =>
+                          setProfileForm({
+                            ...profileForm,
+                            username: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        required
+                      />
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.title}
+                        onChange={(e) =>
+                          setProfileForm({
+                            ...profileForm,
+                            title: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        placeholder="e.g. Product Manager"
                       />
                     </div>
 
@@ -216,75 +531,22 @@ export const Settings = () => {
                       />
                     </div>
 
-                    {/* Phone */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Phone Number
+                    {/* Description - Full Width */}
+                    <div className="md:col-span-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                        Description
                       </label>
-                      <input
-                        type="tel"
-                        value={profileForm.phone}
+                      <textarea
+                        value={profileForm.description}
                         onChange={(e) =>
                           setProfileForm({
                             ...profileForm,
-                            phone: e.target.value,
+                            description: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* Job Title */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Job Title
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.jobTitle}
-                        onChange={(e) =>
-                          setProfileForm({
-                            ...profileForm,
-                            jobTitle: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* Department */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Department
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.department}
-                        onChange={(e) =>
-                          setProfileForm({
-                            ...profileForm,
-                            department: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      />
-                    </div>
-
-                    {/* Location */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Location
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.location}
-                        onChange={(e) =>
-                          setProfileForm({
-                            ...profileForm,
-                            location: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        rows="3"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        placeholder="Tell us a bit about yourself..."
                       />
                     </div>
                   </div>
@@ -299,9 +561,10 @@ export const Settings = () => {
                     </button>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                      disabled={isUpdating}
+                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Save Changes
+                      {isUpdating ? "Saving..." : "Save Changes"}
                     </button>
                   </div>
                 </form>

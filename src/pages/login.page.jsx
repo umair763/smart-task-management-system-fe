@@ -1,21 +1,51 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { AnimatedSection } from "../components/common/AnimatedSection";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import { useLoginMutation } from "../store";
+import { setUser } from "../store";
+import { toast } from "react-toastify";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [login, { isLoading }] = useLoginMutation();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // Fake login: accept any data and redirect
-    navigate("/dashboard");
-  };
+    try {
+      const response = await login({ email, password }).unwrap();
+      console.log("Login response:", response); // Debug log
 
+      // Handle different response structures
+      const userData = response.user || response.data?.user || response;
+      const token =
+        response.token || response.data?.token || response.accessToken;
+
+      // Store user and token in Redux state (will be persisted)
+      dispatch(
+        setUser({
+          user: userData,
+          token: token,
+        })
+      );
+
+      console.log("User stored in Redux:", { user: userData, token }); // Debug log
+
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error(
+        error?.data?.message || "Login failed. Please check your credentials."
+      );
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 md:p-6 lg:p-12">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
@@ -77,9 +107,10 @@ export const LoginPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:opacity-95"
+                disabled={isLoading}
+                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in
+                {isLoading ? "Signing in..." : "Sign in"}
               </button>
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-gray-200" />

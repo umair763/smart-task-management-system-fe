@@ -11,6 +11,10 @@ import {
   Check,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  useCreateTaskMutation,
+  useCreateSubtaskMutation,
+} from "../store/tasks.api";
 
 export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -19,7 +23,12 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const [subtasks, setSubtasks] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
+
+  // API hooks
+  const [createTask] = useCreateTaskMutation();
+  const [createSubtask] = useCreateSubtaskMutation();
 
   const handleAddSubtask = () => {
     setSubtasks([...subtasks, { id: Date.now(), title: "", completed: false }]);
@@ -100,19 +109,56 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   };
 
-  const handleSave = () => {
-    if (!taskTitle.trim()) return;
+  const handleSave = async () => {
+    if (!taskTitle.trim() || isSubmitting) return;
 
-    const newTask = {
-      title: taskTitle,
-      description,
-      priority,
-      subtasks: subtasks.filter((st) => st.title.trim()),
-      attachments,
-    };
+    setIsSubmitting(true);
+    try {
+      // Create the main task with correct field names
+      const taskData = {
+        taskName: taskTitle,
+        description,
+        priority,
+        percentageCompleted: 0,
+        completionStatus: false,
+      };
 
-    onSave?.(newTask);
-    handleReset();
+      const result = await createTask(taskData).unwrap();
+      const createdTaskId = result.data?._id || result._id || result.id;
+
+      console.log("Created task with ID:", createdTaskId);
+
+      // Create subtasks if any
+      const validSubtasks = subtasks.filter((st) => st.title.trim());
+      if (validSubtasks.length > 0 && createdTaskId) {
+        const subtaskPromises = validSubtasks.map((subtask) => {
+          const subtaskData = {
+            parentTaskId: createdTaskId,
+            title: subtask.title,
+            completed: subtask.completed || false,
+          };
+          console.log("Creating subtask:", subtaskData);
+          return createSubtask(subtaskData).unwrap();
+        });
+
+        await Promise.all(subtaskPromises);
+        console.log("All subtasks created successfully");
+      }
+
+      // Success - notify parent and reset
+      onSave?.();
+      handleReset();
+      onClose?.();
+    } catch (error) {
+      console.error("Failed to create task:", error);
+      const errorMessage =
+        error.data?.message ||
+        error.message ||
+        "Failed to create task. Please try again.";
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -359,10 +405,10 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
               </button>
               <button
                 onClick={handleSave}
-                disabled={!taskTitle.trim()}
+                disabled={!taskTitle.trim() || isSubmitting}
                 className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                Save task
+                {isSubmitting ? "Creating..." : "Save task"}
               </button>
             </div>
           </motion.div>

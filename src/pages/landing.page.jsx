@@ -120,9 +120,9 @@ export const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/20 dark:border-gray-700/20">
+      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/20/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -144,25 +144,25 @@ export const LandingPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
-                className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="text-gray-600  hover:text-purple-600 transition-colors"
               >
                 Features
               </a>
               <a
                 href="#pricing"
-                className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="text-gray-600  hover:text-purple-600 transition-colors"
               >
                 Pricing
               </a>
               <a
                 href="#security"
-                className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="text-gray-600  hover:text-purple-600 transition-colors"
               >
                 Security
               </a>
               <Link
                 to="/login"
-                className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                className="text-gray-600  hover:text-purple-600 transition-colors"
               >
                 Sign In
               </Link>
@@ -176,7 +176,7 @@ export const LandingPage = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -190,7 +190,7 @@ export const LandingPage = () => {
           {/* Mobile Menu */}
           {isMenuOpen && (
             <motion.div
-              className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700"
+              className="md:hidden py-4 border-t border-gray-200"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -198,25 +198,25 @@ export const LandingPage = () => {
               <div className="flex flex-col space-y-4">
                 <a
                   href="#features"
-                  className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                  className="text-gray-600  hover:text-purple-600 transition-colors"
                 >
                   Features
                 </a>
                 <a
                   href="#pricing"
-                  className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                  className="text-gray-600  hover:text-purple-600 transition-colors"
                 >
                   Pricing
                 </a>
                 <a
                   href="#security"
-                  className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                  className="text-gray-600  hover:text-purple-600 transition-colors"
                 >
                   Security
                 </a>
                 <Link
                   to="/auth/login"
-                  className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                  className="text-gray-600  hover:text-purple-600 transition-colors"
                 >
                   Sign In
                 </Link>
@@ -233,7 +233,7 @@ export const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 bg-linear-to-br from-[#9406E6] to-[#00FFFF] dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+      <section className="pt-24 pb-20 bg-linear-to-br from-[#9406E6] to-[#00FFFF]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -244,7 +244,7 @@ export const LandingPage = () => {
               transition={{ duration: 0.8 }}
             >
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-6"
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -260,7 +260,7 @@ export const LandingPage = () => {
               </motion.h1>
 
               <motion.p
-                className="text-xl text-gray-800 dark:text-gray-100 mb-8 leading-relaxed font-semibold drop-shadow"
+                className="text-xl text-gray-800 mb-8 leading-relaxed font-semibold drop-shadow"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -283,14 +283,14 @@ export const LandingPage = () => {
                   <span>Start Organizing Smarter</span>
                   <ArrowRight className="h-5 w-5" />
                 </Link>
-                <button className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-purple-600 hover:text-white transition-all duration-200 flex items-center justify-center space-x-2">
+                <button className="border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-purple-600 hover:text-white transition-all duration-200 flex items-center justify-center space-x-2">
                   <Play className="h-5 w-5" />
                   <span>Watch Demo</span>
                 </button>
               </motion.div>
 
               <motion.div
-                className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-gray-800 dark:text-gray-400"
+                className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-gray-800 "
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -317,11 +317,11 @@ export const LandingPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
                 {/* Mock App Interface */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-semibold text-gray-900">
                       Today's Tasks
                     </h3>
                     <div className="flex space-x-2">
@@ -341,10 +341,10 @@ export const LandingPage = () => {
                     >
                       <div className="w-4 h-4 border-2 border-purple-400 rounded"></div>
                       <div className="flex-1">
-                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
-                        <div className="h-2 bg-gray-200 dark:bg-gray-600 rounded w-1/2 mt-1"></div>
+                        <div className="h-3 bg-gray-300 rounded w-3/4"></div>
+                        <div className="h-2 bg-gray-200 rounded w-1/2 mt-1"></div>
                       </div>
-                      <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900 rounded-full"></div>
+                      <div className="w-6 h-6 bg-purple-100 rounded-full"></div>
                     </motion.div>
                   ))}
                 </div>
@@ -372,13 +372,13 @@ export const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white dark:bg-gray-900">
+      <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Powerful Features for Modern Teams
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600  max-w-3xl mx-auto">
               Everything you need to manage tasks, collaborate with teams, and
               boost productivity in one intelligent platform.
             </p>
@@ -394,7 +394,7 @@ export const LandingPage = () => {
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                className="group relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                className="group relative bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
                 variants={fadeInUp}
                 onHoverStart={() => setActiveFeature(index)}
               >
@@ -403,10 +403,10 @@ export const LandingPage = () => {
                 >
                   <feature.icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p className="text-gray-600  leading-relaxed">
                   {feature.description}
                 </p>
                 <motion.div className="absolute inset-0 bg-linear-to-r from-purple-500/5 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -417,13 +417,13 @@ export const LandingPage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-linear-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900">
+      <section className="py-20 bg-linear-to-br from-gray-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               How It Works
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 ">
               Get started in three simple steps
             </p>
           </motion.div>
@@ -464,14 +464,14 @@ export const LandingPage = () => {
                   <div className="w-20 h-20 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <step.icon className="h-8 w-8 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 text-purple-600 font-bold text-sm px-2 py-1 rounded-full border-2 border-purple-600">
+                  <div className="absolute -top-2 -right-2 bg-white text-purple-600 font-bold text-sm px-2 py-1 rounded-full border-2 border-purple-600">
                     {step.step}
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   {step.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600 ">
                   {step.description}
                 </p>
               </motion.div>
@@ -481,13 +481,13 @@ export const LandingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Trusted by Productive Teams Worldwide
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 ">
               See what our users have to say about their experience
             </p>
           </motion.div>
@@ -496,7 +496,7 @@ export const LandingPage = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
-                className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700"
+                className="bg-gray-50 p-6 rounded-xl border border-gray-200"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -507,14 +507,14 @@ export const LandingPage = () => {
                     <Star key={i} className="h-5 w-5 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 italic">
+                <p className="text-gray-600  mb-4 italic">
                   "{testimonial.content}"
                 </p>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-white">
+                  <p className="font-semibold text-gray-900">
                     {testimonial.name}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500 ">
                     {testimonial.role}, {testimonial.company}
                   </p>
                 </div>
@@ -527,14 +527,14 @@ export const LandingPage = () => {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="py-20 bg-linear-to-br from-purple-50 to-blue-50 dark:from-gray-800 dark:to-gray-900"
+        className="py-20 bg-linear-to-br from-purple-50 to-blue-50"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Simple, Transparent Pricing
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 ">
               Choose the plan that fits your needs
             </p>
           </motion.div>
@@ -585,10 +585,10 @@ export const LandingPage = () => {
             ].map((plan, index) => (
               <motion.div
                 key={index}
-                className={`relative bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border-2 ${
+                className={`relative bg-white p-8 rounded-xl shadow-lg border-2 ${
                   plan.popular
                     ? "border-purple-500 scale-105"
-                    : "border-gray-200 dark:border-gray-700"
+                    : "border-gray-200"
                 }`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -604,14 +604,14 @@ export const LandingPage = () => {
                 )}
 
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {plan.name}
                   </h3>
                   <div className="mb-4">
-                    <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                    <span className="text-4xl font-bold text-gray-900">
                       {plan.price}
                     </span>
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">
+                    <span className="text-gray-600  ml-2">
                       {plan.period}
                     </span>
                   </div>
@@ -624,7 +624,7 @@ export const LandingPage = () => {
                       className="flex items-center space-x-3"
                     >
                       <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                      <span className="text-gray-600 dark:text-gray-300">
+                      <span className="text-gray-600 ">
                         {feature}
                       </span>
                     </li>
@@ -647,13 +647,13 @@ export const LandingPage = () => {
       </section>
 
       {/* Security Section */}
-      <section id="security" className="py-20 bg-white dark:bg-gray-900">
+      <section id="security" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Your Data, Secured
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 ">
               Enterprise-grade security you can trust
             </p>
           </motion.div>
@@ -692,10 +692,10 @@ export const LandingPage = () => {
                 <div className="w-16 h-16 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
                   {item.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-gray-600 ">
                   {item.description}
                 </p>
               </motion.div>

@@ -13,7 +13,7 @@
     "@google-cloud/local-auth": "^3.0.1",
     "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^5.1.1",
-    "@reduxjs/toolkit": "^2.8.2",
+    "@reduxjs/toolkit": "^2.11.2",
     "@studio-freight/lenis": "^1.0.42",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.11.0",

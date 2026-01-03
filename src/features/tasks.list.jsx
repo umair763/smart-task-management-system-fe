@@ -13,229 +13,89 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AddTaskMenu } from "./index";
+import {
+  useGetAllTasksQuery,
+  useGetSubtasksByTaskIdQuery,
+  useLazyGetSubtasksByTaskIdQuery,
+  useDeleteTaskMutation,
+  useUpdateTaskMutation,
+  useUpdateSubtaskMutation,
+} from "../store/tasks.api";
 
 export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
   const [expandedTasks, setExpandedTasks] = useState(new Set());
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  // Initialize tasks data
-  const [tasks, setTasks] = useState([
-    {
-      id: "new-tasks",
-      title: "New tasks",
-      icon: "📥",
-      tasks: [
-        {
-          id: 1,
-          title: "Get another day full of work done!",
-          priority: "High",
-          description:
-            "Focus on completing the main deliverables and coordinate with the team for final review.",
-          progress: 74,
-          days: 3,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2026-01-03"),
-          subtasks: [
-            {
-              id: 11,
-              title: "Review morning priorities",
-              progress: 100,
-              completed: true,
-            },
-            {
-              id: 12,
-              title: "Complete client presentation",
-              progress: 50,
-              completed: false,
-            },
-          ],
-        },
-        {
-          id: 2,
-          title: "Keep my mentality healthy by taking walks outside",
-          priority: "Low",
-          progress: 38,
-          days: 3,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2026-01-02"),
-          subtasks: [],
-        },
-      ],
-    },
-    {
-      id: "do-today",
-      title: "Do today",
-      icon: "📌",
-      tasks: [
-        {
-          id: 3,
-          title: "Figure out how to use Clever from the help center",
-          priority: "Urgent",
-          description:
-            "Review all documentation and tutorials to understand the platform features.",
-          progress: 10,
-          days: 3,
-          users: 1,
-          completed: false,
-          createdAt: new Date("2026-01-01"),
-          subtasks: [
-            {
-              id: 31,
-              title: "Read documentation",
-              progress: 100,
-              completed: true,
-            },
-            {
-              id: 32,
-              title: "Watch tutorial videos",
-              progress: 0,
-              completed: false,
-            },
-            {
-              id: 33,
-              title: "Try practice exercises",
-              progress: 0,
-              completed: false,
-            },
-          ],
-        },
-        {
-          id: 4,
-          title: "Build some new components in Figma",
-          priority: "Medium",
-          description:
-            "Design a comprehensive component library including buttons, cards, and navigation elements for the new design system.",
-          progress: 87,
-          days: 2,
-          users: 1,
-          completed: false,
-          createdAt: new Date("2025-12-31"),
-          subtasks: [
-            {
-              id: 41,
-              title: "Create button components",
-              progress: 100,
-              completed: true,
-            },
-            {
-              id: 42,
-              title: "Design card layouts",
-              progress: 75,
-              completed: false,
-            },
-          ],
-        },
-        {
-          id: 5,
-          title: "Create wireframes for the new dashboard",
-          priority: "Medium",
-          progress: 0,
-          days: 1,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2025-12-30"),
-          subtasks: [],
-        },
-      ],
-    },
-    {
-      id: "in-progress",
-      title: "In progress",
-      icon: "⚡",
-      tasks: [
-        {
-          id: 6,
-          title: "Figure out how to use Clever from the help center",
-          priority: "Low",
-          progress: 10,
-          days: 3,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2025-12-29"),
-          subtasks: [],
-        },
-        {
-          id: 7,
-          title: "Build some new components in Figma",
-          priority: "Delayed",
-          description:
-            "This task was delayed due to resource constraints. Need to prioritize other urgent items first before continuing with the component design work.",
-          progress: 83,
-          days: 2,
-          users: 1,
-          completed: false,
-          createdAt: new Date("2025-12-28"),
-          subtasks: [
-            {
-              id: 71,
-              title: "Research best practices",
-              progress: 100,
-              completed: true,
-            },
-            {
-              id: 72,
-              title: "Create initial mockups",
-              progress: 80,
-              completed: false,
-            },
-            {
-              id: 73,
-              title: "Get team feedback",
-              progress: 60,
-              completed: false,
-            },
-          ],
-        },
-        {
-          id: 8,
-          title: "Create wireframes for the new dashboard",
-          priority: "Urgent",
-          progress: 0,
-          days: 1,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2025-12-27"),
-          subtasks: [],
-        },
-        {
-          id: 9,
-          title: "Get another day full of work done!",
-          priority: "High",
-          description:
-            "Stay focused and maintain productivity throughout the day. Break down work into manageable chunks and take regular breaks for better efficiency.",
-          progress: 74,
-          days: 3,
-          users: 3,
-          completed: false,
-          createdAt: new Date("2025-12-26"),
-          subtasks: [],
-        },
-        {
-          id: 10,
-          title: "Keep my mentality healthy by taking walks outside",
-          priority: "Low",
-          progress: 38,
-          days: 3,
-          users: 2,
-          completed: false,
-          createdAt: new Date("2025-12-25"),
-          subtasks: [],
-        },
-      ],
-    },
-  ]);
+  // Fetch tasks from API
+  const { data: apiTasks, isLoading, isError } = useGetAllTasksQuery();
+  const [deleteTask] = useDeleteTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
+  const [updateSubtask] = useUpdateSubtaskMutation();
+  const [fetchSubtasksByTaskId] = useLazyGetSubtasksByTaskIdQuery();
 
-  // Flatten all tasks from groups into a single array
-  const allTasks = useMemo(() => {
-    return tasks.flatMap((group) => group.tasks);
-  }, [tasks]);
+  const getCompletionStatus = (item) => {
+    return Boolean(item?.completionStatus ?? item?.completed ?? false);
+  };
+
+  const extractSubtasksArray = (response) => {
+    if (!response) return [];
+    if (Array.isArray(response)) return response;
+    if (Array.isArray(response.data)) return response.data;
+    if (response.data && Array.isArray(response.data.subtasks)) {
+      return response.data.subtasks;
+    }
+    if (
+      response.data &&
+      response.data.data &&
+      Array.isArray(response.data.data)
+    ) {
+      return response.data.data;
+    }
+    if (Array.isArray(response.subtasks)) return response.subtasks;
+    return [];
+  };
+
+  // Transform API tasks to the format expected by the UI
+  const tasks = useMemo(() => {
+    if (!apiTasks) return [];
+
+    // Handle different API response structures
+    let tasksArray = [];
+    if (Array.isArray(apiTasks)) {
+      tasksArray = apiTasks;
+    } else if (apiTasks.data && Array.isArray(apiTasks.data)) {
+      tasksArray = apiTasks.data;
+    } else if (apiTasks.tasks && Array.isArray(apiTasks.tasks)) {
+      tasksArray = apiTasks.tasks;
+    }
+
+    if (tasksArray.length === 0) return [];
+
+    return tasksArray.map((task) => ({
+      id: task._id || task.id,
+      title: task.taskName || task.title || "",
+      description: task.description || "",
+      priority: task.priority || "Medium",
+      progress: task.percentageCompleted || task.progress || 0,
+      days: task.days || 1,
+      users: task.users || 1,
+      completed: task.completionStatus ?? task.completed ?? false,
+      createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
+      subtasks: task.subtasks || [],
+      subtaskCount:
+        typeof task.subtaskCount === "number"
+          ? task.subtaskCount
+          : Array.isArray(task.subtasks)
+          ? task.subtasks.length
+          : 0,
+      attachments: task.attachments || [],
+    }));
+  }, [apiTasks]);
 
   // Filter and sort tasks
   const filteredAndSortedTasks = useMemo(() => {
-    let taskList = [...allTasks];
+    let taskList = [...tasks];
 
     // Filter by search query
     if (searchQuery.trim()) {
@@ -256,7 +116,7 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
     }
 
     return taskList;
-  }, [allTasks, searchQuery, sortBy]);
+  }, [tasks, searchQuery, sortBy]);
 
   const getPriorityEmoji = (priority) => {
     const emojis = {
@@ -292,87 +152,137 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
     });
   };
 
-  const toggleTaskCompletion = (
+  const toggleTaskCompletion = async (
     taskId,
     isSubtask = false,
-    parentTaskId = null
+    parentTaskId = null,
+    currentCompleted = null
   ) => {
-    setTasks((prevTasks) => {
-      return prevTasks.map((group) => ({
-        ...group,
-        tasks: group.tasks.map((task) => {
-          if (isSubtask && task.id === parentTaskId) {
-            // Update the specific subtask
-            const updatedSubtasks = task.subtasks.map((subtask) =>
-              subtask.id === taskId
-                ? { ...subtask, completed: !subtask.completed }
-                : subtask
+    if (!isSubtask) {
+      // Update main task completion via API
+      const task = tasks.find((t) => t.id === taskId);
+      if (task) {
+        const nextCompleted = !task.completed;
+        try {
+          await updateTask({
+            id: taskId,
+            completionStatus: nextCompleted,
+          }).unwrap();
+
+          // Completion Propagation Rule (frontend enforcement)
+          // When a Task is marked completed, auto-complete all subtasks.
+          if (nextCompleted && (task.subtaskCount ?? 0) > 0) {
+            const subtasksResponse = await fetchSubtasksByTaskId(
+              taskId
+            ).unwrap();
+            const subtasksArray = extractSubtasksArray(subtasksResponse);
+
+            await Promise.all(
+              subtasksArray
+                .filter((st) => !getCompletionStatus(st))
+                .map((st) =>
+                  updateSubtask({
+                    id: st._id || st.id,
+                    parentTaskId: taskId,
+                    completionStatus: true,
+                  }).unwrap()
+                )
             );
-
-            // Check if all subtasks are now completed
-            const allSubtasksCompleted = updatedSubtasks.every(
-              (st) => st.completed
-            );
-
-            return {
-              ...task,
-              subtasks: updatedSubtasks,
-              completed: allSubtasksCompleted, // Auto-complete parent if all subtasks are done
-            };
-          } else if (!isSubtask && task.id === taskId) {
-            const newCompletedState = !task.completed;
-            // If task has subtasks, mark all subtasks with the same completed state
-            const updatedSubtasks =
-              task.subtasks && task.subtasks.length > 0
-                ? task.subtasks.map((subtask) => ({
-                    ...subtask,
-                    completed: newCompletedState,
-                  }))
-                : task.subtasks;
-
-            return {
-              ...task,
-              completed: newCompletedState,
-              subtasks: updatedSubtasks,
-            };
           }
-          return task;
-        }),
-      }));
-    });
+        } catch (error) {
+          console.error("Failed to update task:", error);
+          alert(
+            error?.data?.message ||
+              error?.message ||
+              "Failed to update task. Please try again."
+          );
+        }
+      }
+    } else {
+      // Update subtask completion via API
+      if (currentCompleted === null || currentCompleted === undefined) {
+        console.warn("Missing current subtask state; skipping update", {
+          taskId,
+          parentTaskId,
+        });
+        return;
+      }
+      try {
+        await updateSubtask({
+          id: taskId,
+          parentTaskId,
+          completionStatus: !currentCompleted,
+        }).unwrap();
+
+        // Completion propagation upward (frontend enforcement)
+        // If all subtasks are complete, auto-complete the parent task.
+        if (parentTaskId) {
+          const parentTask = tasks.find((t) => t.id === parentTaskId);
+          if (parentTask && (parentTask.subtaskCount ?? 0) > 0) {
+            const subtasksResponse = await fetchSubtasksByTaskId(
+              parentTaskId
+            ).unwrap();
+            const subtasksArray = extractSubtasksArray(subtasksResponse);
+            const allCompleted =
+              subtasksArray.length > 0 &&
+              subtasksArray.every((st) => getCompletionStatus(st));
+
+            if (allCompleted && !parentTask.completed) {
+              await updateTask({
+                id: parentTaskId,
+                completionStatus: true,
+              }).unwrap();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to update subtask:", error);
+        alert(
+          error?.data?.message ||
+            error?.message ||
+            "Failed to update subtask. Please try again."
+        );
+      }
+    }
   };
 
-  const handleSaveTask = (newTask) => {
-    // In a real app, this would save to backend
-    console.log("New task created:", newTask);
+  const handleDeleteTask = async (taskId) => {
+    // Deletion Guard Rule (frontend enforcement)
+    // Block deletion if any child subtask is incomplete.
+    const task = tasks.find((t) => t.id === taskId);
 
-    // Add to the first group (New tasks) for demo purposes
-    const taskData = {
-      id: Date.now(),
-      title: newTask.title,
-      description: newTask.description,
-      priority: newTask.priority || "Medium",
-      progress: 0,
-      days: 1,
-      users: 1,
-      completed: false,
-      createdAt: new Date(),
-      subtasks: newTask.subtasks.map((st) => ({
-        ...st,
-        progress: 0,
-      })),
-      attachments: newTask.attachments,
-    };
+    try {
+      if (task && (task.subtaskCount ?? 0) > 0) {
+        const subtasksResponse = await fetchSubtasksByTaskId(taskId).unwrap();
+        const subtasksArray = extractSubtasksArray(subtasksResponse);
+        const hasIncomplete = subtasksArray.some(
+          (st) => !(st.completionStatus || st.completed)
+        );
 
-    setTasks((prevTasks) => {
-      const updatedTasks = [...prevTasks];
-      updatedTasks[0] = {
-        ...updatedTasks[0],
-        tasks: [taskData, ...updatedTasks[0].tasks],
-      };
-      return updatedTasks;
-    });
+        if (hasIncomplete) {
+          alert(
+            "Cannot delete this task because it has incomplete subtasks. Complete all subtasks first."
+          );
+          setOpenMenuId(null);
+          return;
+        }
+      }
 
+      await deleteTask(taskId).unwrap();
+      setOpenMenuId(null);
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+      alert(
+        error?.data?.message ||
+          error?.message ||
+          "Failed to delete task. Please try again."
+      );
+    }
+  };
+
+  const handleSaveTask = async (newTask) => {
+    // This will be handled by AddTaskMenu component
+    // Just close the menu after saving
     setIsAddTaskOpen(false);
   };
 
@@ -396,28 +306,45 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
           </div>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+            Loading tasks...
+          </div>
+        )}
+
+        {/* Error State */}
+        {isError && (
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-red-200 p-8 text-center text-red-500">
+            Failed to load tasks. Please try again.
+          </div>
+        )}
+
         {/* Tasks List */}
-        <div className="space-y-3">
-          {filteredAndSortedTasks.length > 0 ? (
-            filteredAndSortedTasks.map((task) => (
-              <TaskRow
-                key={task.id}
-                task={task}
-                getPriorityEmoji={getPriorityEmoji}
-                getPriorityColor={getPriorityColor}
-                isExpanded={expandedTasks.has(task.id)}
-                onToggleExpansion={toggleTaskExpansion}
-                onToggleCompletion={toggleTaskCompletion}
-                openMenuId={openMenuId}
-                setOpenMenuId={setOpenMenuId}
-              />
-            ))
-          ) : (
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
-              No tasks found
-            </div>
-          )}
-        </div>
+        {!isLoading && !isError && (
+          <div className="space-y-3">
+            {filteredAndSortedTasks.length > 0 ? (
+              filteredAndSortedTasks.map((task) => (
+                <TaskRow
+                  key={task.id}
+                  task={task}
+                  getPriorityEmoji={getPriorityEmoji}
+                  getPriorityColor={getPriorityColor}
+                  isExpanded={expandedTasks.has(task.id)}
+                  onToggleExpansion={toggleTaskExpansion}
+                  onToggleCompletion={toggleTaskCompletion}
+                  onDeleteTask={handleDeleteTask}
+                  openMenuId={openMenuId}
+                  setOpenMenuId={setOpenMenuId}
+                />
+              ))
+            ) : (
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+                No tasks found
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Add Task Menu */}
@@ -438,11 +365,44 @@ const TaskRow = ({
   isExpanded,
   onToggleExpansion,
   onToggleCompletion,
+  onDeleteTask,
   openMenuId,
   setOpenMenuId,
 }) => {
-  const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  const hasSubtasks = (task.subtaskCount ?? 0) > 0;
   const hasDescription = task.description && task.description.trim();
+
+  const {
+    data: subtasksResponse,
+    isLoading: isSubtasksLoading,
+    isError: isSubtasksError,
+  } = useGetSubtasksByTaskIdQuery(task.id, {
+    skip: !isExpanded || !hasSubtasks,
+  });
+
+  const subtasks = useMemo(() => {
+    if (!subtasksResponse) return [];
+
+    let subtasksArray = [];
+    if (Array.isArray(subtasksResponse)) {
+      subtasksArray = subtasksResponse;
+    } else if (Array.isArray(subtasksResponse.data)) {
+      subtasksArray = subtasksResponse.data;
+    } else if (
+      subtasksResponse.data &&
+      Array.isArray(subtasksResponse.data.subtasks)
+    ) {
+      subtasksArray = subtasksResponse.data.subtasks;
+    } else if (Array.isArray(subtasksResponse.subtasks)) {
+      subtasksArray = subtasksResponse.subtasks;
+    }
+
+    return subtasksArray.map((st) => ({
+      id: st._id || st.id,
+      title: st.subtaskName || st.title || st.name || "",
+      completed: st.completionStatus ?? st.completed ?? false,
+    }));
+  }, [subtasksResponse]);
 
   const handleRowClick = (e) => {
     // Expand to show description if it exists, or subtasks
@@ -584,8 +544,11 @@ const TaskRow = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  console.log("Delete task:", task.id);
-                  setOpenMenuId(null);
+                  if (
+                    window.confirm("Are you sure you want to delete this task?")
+                  ) {
+                    onDeleteTask(task.id);
+                  }
                 }}
                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
               >
@@ -619,14 +582,36 @@ const TaskRow = ({
             {/* Subtasks Section */}
             {hasSubtasks && (
               <div className="px-4 sm:px-5 py-3 space-y-2">
-                {task.subtasks.map((subtask) => (
-                  <SubtaskRow
-                    key={subtask.id}
-                    subtask={subtask}
-                    parentTaskId={task.id}
-                    onToggleCompletion={onToggleCompletion}
-                  />
-                ))}
+                {isSubtasksLoading && (
+                  <div className="text-sm text-gray-500">
+                    Loading subtasks...
+                  </div>
+                )}
+
+                {isSubtasksError && (
+                  <div className="text-sm text-red-500">
+                    Failed to load subtasks.
+                  </div>
+                )}
+
+                {!isSubtasksLoading &&
+                  !isSubtasksError &&
+                  subtasks.length === 0 && (
+                    <div className="text-sm text-gray-500">
+                      No subtasks found
+                    </div>
+                  )}
+
+                {!isSubtasksLoading &&
+                  !isSubtasksError &&
+                  subtasks.map((subtask) => (
+                    <SubtaskRow
+                      key={subtask.id}
+                      subtask={subtask}
+                      parentTaskId={task.id}
+                      onToggleCompletion={onToggleCompletion}
+                    />
+                  ))}
               </div>
             )}
           </motion.div>
@@ -644,7 +629,7 @@ const SubtaskRow = ({ subtask, parentTaskId, onToggleCompletion }) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onToggleCompletion(subtask.id, true, parentTaskId);
+          onToggleCompletion(subtask.id, true, parentTaskId, subtask.completed);
         }}
         className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
           subtask.completed

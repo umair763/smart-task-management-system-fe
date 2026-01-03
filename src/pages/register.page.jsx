@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { AnimatedSection } from "../components/common/AnimatedSection";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import { useRegisterMutation } from "../store";
+import { setUser } from "../store";
+import { toast } from "react-toastify";
 
 export const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
@@ -13,11 +17,48 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // Fake registration: accept any data and redirect
-    navigate("/dashboard");
+
+    if (!agree) {
+      toast.error("Please agree to the Terms & Conditions");
+      return;
+    }
+
+    try {
+      const response = await register({
+        firstName,
+        lastName,
+        username,
+        email,
+        description,
+        password,
+      }).unwrap();
+
+      toast.success("Registration successful!");
+
+      // If the API returns user and token, auto-login
+      if (response.token || response.data?.token) {
+        dispatch(
+          setUser({
+            user: response.user || response.data?.user,
+            token: response.token || response.data?.token,
+          })
+        );
+        navigate("/dashboard");
+      } else {
+        // Otherwise redirect to login
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error(
+        error?.data?.message || "Registration failed. Please try again."
+      );
+    }
   };
 
   return (
@@ -142,9 +183,10 @@ export const RegisterPage = () => {
               </label>
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold"
+                disabled={isLoading}
+                className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create account
+                {isLoading ? "Creating account..." : "Create account"}
               </button>
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-px bg-gray-200" />
