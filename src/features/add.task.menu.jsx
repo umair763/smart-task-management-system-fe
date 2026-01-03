@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("Medium");
   const [subtasks, setSubtasks] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -105,6 +106,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
     const newTask = {
       title: taskTitle,
       description,
+      priority,
       subtasks: subtasks.filter((st) => st.title.trim()),
       attachments,
     };
@@ -116,6 +118,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const handleReset = () => {
     setTaskTitle("");
     setDescription("");
+    setPriority("Medium");
     setSubtasks([]);
     setAttachments([]);
   };
@@ -147,8 +150,8 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             className="fixed right-0 top-0 h-full w-full sm:w-[500px] md:w-[600px] lg:w-[700px] bg-white shadow-2xl z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                 Create a new task
               </h2>
               <button
@@ -160,7 +163,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             </div>
 
             {/* Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
               {/* Task Title */}
               <div>
                 <div className="relative">
@@ -169,7 +172,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                     value={taskTitle}
                     onChange={(e) => setTaskTitle(e.target.value)}
                     placeholder="Click here and start typing"
-                    className="w-full text-base sm:text-lg font-medium px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors placeholder:text-gray-400"
+                    className="w-full text-sm sm:text-base font-medium px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors placeholder:text-gray-400"
                     autoFocus
                   />
                 </div>
@@ -177,23 +180,54 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
               {/* Description */}
               <div>
-                <div className="border-2 border-gray-200 rounded-xl focus-within:border-blue-500 transition-colors">
+                <div className="border-2 border-gray-200 rounded-lg focus-within:border-blue-500 transition-colors">
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
-                    rows="4"
-                    className="w-full px-4 py-3 border-none focus:outline-none resize-none text-sm placeholder:text-gray-400"
+                    rows="2"
+                    className="w-full px-3 py-2 border-none focus:outline-none resize-none text-sm placeholder:text-gray-400"
                   />
+                </div>
+              </div>
+
+              {/* Priority */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-900 mb-2">
+                  Priority
+                </h3>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {[
+                    { label: "Urgent", emoji: "🔴" },
+                    { label: "High", emoji: "🟠" },
+                    { label: "Medium", emoji: "🟡" },
+                    { label: "Low", emoji: "🟢" },
+                    { label: "Delayed", emoji: "⚪" },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => setPriority(item.label)}
+                      className={`flex flex-col items-center gap-0.5 p-2 rounded-lg border-2 transition-all ${
+                        priority === item.label
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <span className="text-xl">{item.emoji}</span>
+                      <span className="text-[10px] font-medium text-gray-700">
+                        {item.label}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
               {/* Subtasks */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                <h3 className="text-xs font-semibold text-gray-900 mb-2">
                   Subtasks
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {subtasks.map((subtask) => (
                     <div
                       key={subtask.id}
@@ -218,7 +252,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                           handleSubtaskChange(subtask.id, e.target.value)
                         }
                         placeholder="Enter subtask"
-                        className={`flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors ${
+                        className={`flex-1 px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors ${
                           subtask.completed ? "line-through text-gray-400" : ""
                         }`}
                       />
@@ -233,9 +267,9 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
                   <button
                     onClick={handleAddSubtask}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full"
+                    className="flex items-center gap-2 px-2.5 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full"
                   >
-                    <span className="text-lg">+</span>
+                    <span className="text-base">+</span>
                     <span>Add another subtask</span>
                   </button>
                 </div>
@@ -243,7 +277,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
               {/* Attachments */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                <h3 className="text-xs font-semibold text-gray-900 mb-2">
                   Attachments
                 </h3>
 
@@ -253,21 +287,21 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                  className={`border-2 border-dashed rounded-lg p-3 text-center cursor-pointer transition-all ${
                     isDragging
                       ? "border-blue-500 bg-blue-50"
                       : "border-gray-300 hover:border-gray-400 bg-gray-50"
                   }`}
                 >
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                      <Upload className="w-6 h-6 text-gray-600" />
+                  <div className="flex flex-col items-center gap-1.5">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                      <Upload className="w-4 h-4 text-gray-600" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-700 font-medium">
+                      <p className="text-xs text-gray-700 font-medium">
                         Upload a file or drag and drop
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-[10px] text-gray-500 mt-0.5">
                         PNG, JPG, PDF or DOCX up to 10MB
                       </p>
                     </div>
@@ -285,28 +319,28 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
                 {/* Attachment List */}
                 {attachments.length > 0 && (
-                  <div className="mt-4 space-y-2">
+                  <div className="mt-2 space-y-1.5">
                     {attachments.map((attachment) => (
                       <div
                         key={attachment.id}
-                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 group hover:bg-gray-100 transition-colors"
+                        className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border border-gray-200 group hover:bg-gray-100 transition-colors"
                       >
-                        <div className="flex-shrink-0 w-8 h-8 rounded bg-blue-100 flex items-center justify-center">
-                          <Paperclip className="w-4 h-4 text-blue-600" />
+                        <div className="flex-shrink-0 w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
+                          <Paperclip className="w-3 h-3 text-blue-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-xs font-medium text-gray-900 truncate">
                             {attachment.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-[10px] text-gray-500">
                             {formatFileSize(attachment.size)}
                           </p>
                         </div>
                         <button
                           onClick={() => handleRemoveAttachment(attachment.id)}
-                          className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-1"
+                          className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-0.5"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}
@@ -316,7 +350,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 p-4 sm:p-6 border-t border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={handleClose}
                 className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
