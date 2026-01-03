@@ -7,7 +7,9 @@ import { Link } from "react-router-dom";
 export const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
   const [password, setPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const navigate = useNavigate();
@@ -19,14 +21,14 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 md:p-6 lg:p-5">
-      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 md:p-4 lg:p-4">
+      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
         <AnimatedSection
           direction="left"
-          className="hidden md:flex md:w-1/2 bg-linear-to-br from-purple-700 via-indigo-700 to-black text-white p-10 items-center justify-center"
+          className="hidden md:flex md:w-1/2 bg-linear-to-br from-purple-700 via-indigo-700 to-black text-white p-6 items-center justify-center"
         >
           <div className="max-w-lg">
-            <h2 className="text-3xl font-extrabold mb-4">Create an account</h2>
+            <h2 className="text-2xl font-extrabold mb-2">Create an account</h2>
             <p className="text-gray-200/90">
               Join thousands of teams using Smart Todo to organize work.
             </p>
@@ -35,20 +37,20 @@ export const RegisterPage = () => {
 
         <AnimatedSection
           direction="right"
-          className="flex-1 flex items-center justify-center p-4 md:p-5"
+          className="flex-1 flex items-center justify-center p-2 md:p-3"
         >
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-md p-8 m-0">
-            <div className="mb-6 text-center">
-              <h2 className="text-2xl font-bold">Create an account</h2>
-              <p className="text-sm text-gray-500 mt-2">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-4 md:p-5 m-0">
+            <div className="mb-3 text-center">
+              <h2 className="text-xl font-bold">Create an account</h2>
+              <p className="text-sm text-gray-500 mt-1">
                 Already have an account?{" "}
                 <Link to="/login" className="text-purple-600 font-semibold">
                   Log in
                 </Link>
               </p>
             </div>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <form onSubmit={onSubmit} className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     First name
@@ -57,7 +59,7 @@ export const RegisterPage = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-500"
+                    className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
                     placeholder="Fletcher"
                   />
                 </div>
@@ -69,10 +71,22 @@ export const RegisterPage = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
-                    className="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-500"
+                    className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
                     placeholder="Last name"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Username
+                </label>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  placeholder="Username"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -83,8 +97,20 @@ export const RegisterPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
                   placeholder="you@company.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows="2"
+                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  placeholder="Tell us a bit about yourself..."
                 />
               </div>
               <div>
@@ -96,7 +122,7 @@ export const RegisterPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
                   placeholder="Enter your password"
                 />
               </div>
@@ -116,22 +142,22 @@ export const RegisterPage = () => {
               </label>
               <button
                 type="submit"
-                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold"
+                className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold"
               >
                 Create account
               </button>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <div className="flex-1 h-px bg-gray-200" />
                 <div className="text-sm text-gray-400">Or register with</div>
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
-              <div className="flex justify-center gap-3">
+              <div className="flex justify-center gap-2">
                 <button
                   type="button"
-                  className="cursor-pointer rounded-full border border-gray-300 bg-white shadow-sm p-3 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  className="cursor-pointer rounded-full border border-gray-300 bg-white shadow-sm p-2 flex items-center justify-center hover:bg-gray-50 transition-colors"
                   aria-label="Sign up with Google"
                 >
-                  <FcGoogle className="w-6 h-6" />
+                  <FcGoogle className="w-5 h-5" />
                 </button>
               </div>
             </form>
