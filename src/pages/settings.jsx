@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { User, Lock, Bell, Eye, EyeOff, Camera } from "lucide-react";
+import {
+  User,
+  Lock,
+  Bell,
+  Eye,
+  EyeOff,
+  Camera,
+  Settings as SettingsIcon,
+} from "lucide-react";
 import {
   useUpdateUserMutation,
   useGetCurrentUserQuery,
@@ -141,8 +149,7 @@ export const Settings = () => {
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
-    { id: "password", label: "Password", icon: Lock },
-    { id: "notification", label: "Notification", icon: Bell },
+    { id: "appsettings", label: "App Settings", icon: SettingsIcon },
   ];
 
   const handlePasswordSubmit = (e) => {
@@ -381,9 +388,6 @@ export const Settings = () => {
                 </p>
               </div>
             </div>
-            <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors w-full sm:w-auto">
-              View profile
-            </button>
           </div>
         </div>
 
@@ -401,7 +405,7 @@ export const Settings = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-1.5 sm:gap-2 py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-1.5 hover:cursor-pointer sm:gap-2 py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                       activeTab === tab.id
                         ? "border-blue-600 text-blue-600"
                         : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
@@ -555,14 +559,14 @@ export const Settings = () => {
                   <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                     <button
                       type="button"
-                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full cursor-pointer sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isUpdating}
-                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full cursor-pointer sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-[#C6532A] rounded-lg hover:bg-[#ba4f29] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isUpdating ? "Saving..." : "Save Changes"}
                     </button>
@@ -572,22 +576,21 @@ export const Settings = () => {
             )}
 
             {/* Password Tab */}
-            {activeTab === "password" && (
+            {activeTab === "appsettings" && (
               <div className="max-w-2xl">
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-1.5 sm:mb-2">
-                    Password
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    Please enter your current password to change your password
-                  </p>
+                {/* Password Section */}
+                <div className="mb-3 sm:mb-5 flex items-center gap-2">
+                  <div className="p-1.5 sm:p-2 bg-gray-100 rounded-lg">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+                  </div>
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+                    Password Management
+                  </h3>
                 </div>
-
                 <form
                   onSubmit={handlePasswordSubmit}
-                  className="space-y-3 sm:space-y-5"
+                  className="space-y-3 sm:space-y-5 mb-8"
                 >
-                  {/* Current Password */}
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                       Current password
@@ -621,8 +624,6 @@ export const Settings = () => {
                       </button>
                     </div>
                   </div>
-
-                  {/* New Password */}
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                       New password
@@ -657,8 +658,6 @@ export const Settings = () => {
                       Your new password must be more than 8 characters.
                     </p>
                   </div>
-
-                  {/* Confirm New Password */}
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
                       Confirm new password
@@ -692,9 +691,7 @@ export const Settings = () => {
                       </button>
                     </div>
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
+                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
                     <button
                       type="button"
                       onClick={() =>
@@ -704,153 +701,67 @@ export const Settings = () => {
                           confirmPassword: "",
                         })
                       }
-                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium hover:cursor-pointer text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm hover:cursor-pointer font-medium text-white bg-[#DF5B28] rounded-lg hover:bg-[#c95324] transition-colors"
                     >
                       Update password
                     </button>
                   </div>
                 </form>
-              </div>
-            )}
 
-            {/* Notification Tab */}
-            {activeTab === "notification" && (
-              <div className="max-w-3xl">
-                <div className="mb-4 sm:mb-6">
-                  <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-1.5 sm:mb-2">
-                    Notification Preferences
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    Manage how you receive notifications and updates
-                  </p>
-                </div>
-
+                {/* Notification Section: Only Email Reminder for Task Deadline */}
                 <div className="space-y-5 sm:space-y-8">
-                  {/* Email Notifications */}
                   <div>
                     <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
                       <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
                         <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                       </div>
-                      Email Notifications
+                      Email notifications
                     </h3>
                     <div className="space-y-4 pl-10">
-                      {Object.entries(
-                        notificationSettings.emailNotifications
-                      ).map(([key, value]) => (
-                        <div
-                          key={key}
-                          className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {key
-                                .replace(/([A-Z])/g, " $1")
-                                .replace(/^./, (str) => str.toUpperCase())}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {key === "taskExpire"
-                                ? "Get notified when a task Deadlin exceed."
-                                : key === "taskCompleted"
-                                ? "Get notified when your task is marked as completed"
-                                : key === "taskOverdue"
-                                ? "Get notified when a task is overdue"
-                                : key === "weeklyReport"
-                                ? "Receive a weekly summary of your tasks"
-                                : "Get notified about team updates and changes"}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() =>
-                              handleNotificationToggle(
-                                "emailNotifications",
-                                key
-                              )
-                            }
-                            className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors flex-shrink-0 ${
-                              value ? "bg-blue-600" : "bg-gray-200"
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform ${
-                                value
-                                  ? "translate-x-5 sm:translate-x-6"
-                                  : "translate-x-0.5 sm:translate-x-1"
-                              }`}
-                            />
-                          </button>
+                      <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            Tasks deadline
+                          </p>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            Receive an email a day before a task's deadline to
+                            help you stay on track.
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Reminder Notifications */}
-                  <div>
-                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                      <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg">
-                        <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600" />
+                        <button
+                          onClick={() =>
+                            setNotificationSettings((prev) => ({
+                              ...prev,
+                              emailNotifications: {
+                                ...prev.emailNotifications,
+                                taskDeadline:
+                                  !prev.emailNotifications.taskDeadline,
+                              },
+                            }))
+                          }
+                          className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors shrink-0 ${
+                            notificationSettings.emailNotifications.taskDeadline
+                              ? "bg-blue-600"
+                              : "bg-gray-200"
+                          }`}
+                        >
+                          <span
+                            className={`inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform ${
+                              notificationSettings.emailNotifications
+                                .taskDeadline
+                                ? "translate-x-5 sm:translate-x-6"
+                                : "translate-x-0.5 sm:translate-x-1"
+                            }`}
+                          />
+                        </button>
                       </div>
-                      Reminder Notifications
-                    </h3>
-                    <div className="space-y-4 pl-10">
-                      {Object.entries(
-                        notificationSettings.reminderNotifications
-                      ).map(([key, value]) => (
-                        <div
-                          key={key}
-                          className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {key
-                                .replace(/([A-Z])/g, " $1")
-                                .replace(/^./, (str) => str.toUpperCase())}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {key === "upcomingDeadlines"
-                                ? "Get reminded about upcoming task deadlines"
-                                : key === "dailyDigest"
-                                ? "Receive a daily summary of your tasks"
-                                : key === "taskReminders"
-                                ? "Get reminded about pending tasks"
-                                : "Get notified when someone mentions you in comments"}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() =>
-                              handleNotificationToggle(
-                                "reminderNotifications",
-                                key
-                              )
-                            }
-                            className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors flex-shrink-0 ${
-                              value ? "bg-blue-600" : "bg-gray-200"
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 transform rounded-full bg-white transition-transform ${
-                                value
-                                  ? "translate-x-5 sm:translate-x-6"
-                                  : "translate-x-0.5 sm:translate-x-1"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      ))}
                     </div>
-                  </div>
-
-                  {/* Save Button */}
-                  <div className="flex justify-end pt-3 sm:pt-4 border-t border-gray-200">
-                    <button className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                      Save Preferences
-                    </button>
                   </div>
                 </div>
               </div>

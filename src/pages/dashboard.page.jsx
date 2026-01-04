@@ -402,12 +402,12 @@ export const DashboardPage = () => {
   }, [candidateUrl]);
 
   return (
-    <div className="w-full mx-auto p-4 rounded-3xl text-gray-700">
+    <div className="w-full mx-auto p-4 rounded-3xl text-gray-800">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold ">Dashboard</h1>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-gray-800">
             Track team performance & project insights at a glance.
           </p>
         </div>

@@ -55,15 +55,8 @@ export const Header = () => {
   return (
     <header className="w-[98%] h-18 flex items-center px-4 md:px-8 rounded-3xl bg-[#C6532A] mt-1 ml-2 mx-auto">
       {/* Search bar */}
-      <div className="flex-1 flex items-center">
-        <div className="flex items-center bg-[#F0F0F0] rounded-full px-4 py-2 w-full max-w-[340px] h-10">
-          <input
-            type="text"
-            placeholder="Type here to search"
-            className="bg-transparent outline-none text-[#232323] placeholder-gray-500 w-full text-sm"
-            style={{ letterSpacing: "0.01em" }}
-          />
-        </div>
+      <div className="flex-1 flex items-center text-white font-extrabold text-xs md:text-2xl lg:text-2xl">
+        <h1>Transform Chaos Into Clarity</h1>
       </div>
 
       {/* Notification bell */}

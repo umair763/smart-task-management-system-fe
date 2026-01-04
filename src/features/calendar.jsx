@@ -66,22 +66,18 @@ export const Calendar = () => {
     const tasksArray = extractTasksArray(apiTasks);
 
     tasksArray.forEach((task) => {
-      const scheduledDate =
-        coerceDate(task?.scheduledDate) ||
-        coerceDate(task?.dueDate) ||
-        coerceDate(task?.deadline) ||
-        coerceDate(task?.date) ||
-        coerceDate(task?.createdAt);
+      // Only use deadline for calendar cell placement
+      const deadlineDate = coerceDate(task?.deadline);
 
-      if (scheduledDate) {
+      if (deadlineDate) {
         const normalizedPriority = normalizePriority(task?.priority);
 
         // Only include tasks from the current month/year
         if (
-          scheduledDate.getMonth() === currentMonth.getMonth() &&
-          scheduledDate.getFullYear() === currentMonth.getFullYear()
+          deadlineDate.getMonth() === currentMonth.getMonth() &&
+          deadlineDate.getFullYear() === currentMonth.getFullYear()
         ) {
-          const day = scheduledDate.getDate();
+          const day = deadlineDate.getDate();
           if (!dates[day]) {
             dates[day] = {
               tasks: [],

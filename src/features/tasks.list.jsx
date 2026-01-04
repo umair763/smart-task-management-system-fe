@@ -82,6 +82,7 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
       users: task.users || 1,
       completed: task.completionStatus ?? task.completed ?? false,
       createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
+      deadline: task.deadline ? new Date(task.deadline) : null,
       subtasks: task.subtasks || [],
       subtaskCount:
         typeof task.subtaskCount === "number"
@@ -108,11 +109,22 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
     if (sortBy === "name-asc") {
       taskList = taskList.sort((a, b) => a.title.localeCompare(b.title));
     } else if (sortBy === "date-desc") {
-      taskList = taskList.sort(
-        (a, b) =>
-          (b.createdAt || new Date(0)).getTime() -
-          (a.createdAt || new Date(0)).getTime()
-      );
+      // Sort by deadline descending; tasks without deadline go last
+      taskList = taskList.sort((a, b) => {
+        const aTime =
+          a.deadline instanceof Date
+            ? a.deadline.getTime()
+            : a.deadline
+            ? new Date(a.deadline).getTime()
+            : -Infinity;
+        const bTime =
+          b.deadline instanceof Date
+            ? b.deadline.getTime()
+            : b.deadline
+            ? new Date(b.deadline).getTime()
+            : -Infinity;
+        return bTime - aTime;
+      });
     }
 
     return taskList;
@@ -289,20 +301,70 @@ export const TasksList = ({ searchQuery = "", sortBy = "" }) => {
   return (
     <div className="">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section with Create Button */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
-          <div className="flex items-center justify-end gap-2 sm:gap-3">
-            <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-            <button
-              onClick={() => setIsAddTaskOpen(true)}
-              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>Create</span>
-            </button>
+        {/* Header Section with Context + Create Button */}
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            {/* LEFT SIDE — Contextual Info */}
+            <div className="flex flex-col gap-1">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                Tasks Overview
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-500">
+                Organize priorities, deadlines, and progress in one place
+              </p>
+
+              {/* Optional stats row */}
+              <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
+                <span>• High priority focus</span>
+                <span>• Deadlines tracked</span>
+                <span className="hidden sm:inline">• Subtasks supported</span>
+              </div>
+            </div>
+
+            {/* RIGHT SIDE — Animated Create Button */}
+            <div className="flex justify-end">
+              <button
+                onClick={() => setIsAddTaskOpen(true)}
+                className="relative group inline-flex items-center gap-2 cursor-pointer
+               px-4 sm:px-5 py-2 sm:py-2.5 
+               rounded-xl font-medium text-sm sm:text-base text-blue-600
+               bg-white
+               shadow-lg shadow-blue-500/30
+               active:scale-[0.97]
+               transition-all duration-300"
+              >
+                {/* Always-on animated pulse border */}
+                <span
+                  className="absolute inset-0 rounded-xl 
+                 border-2 border-blue-500/60
+                 animate-pulse"
+                />
+
+                {/* Always-on glowing aura */}
+                <span
+                  className="absolute inset-[10px] rounded-xl 
+                 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500
+                 opacity-30 blur-lg
+                 animate-pulse"
+                />
+
+                {/* Hover intensifies glow (does NOT create it) */}
+                <span
+                  className="absolute -inset-[1px] rounded-xl 
+                 bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400
+                 opacity-0 group-hover:opacity-40 blur-xl
+                 transition-opacity duration-300"
+                />
+
+                {/* Button content */}
+                <span className="relative z-10 flex items-center gap-2 bg-white rounded-xl px-4 sm:px-5 py-2 sm:py-2.5">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white">
+                    <Plus className="w-4 h-4" />
+                  </span>
+                  <span>Create Task</span>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -419,7 +481,7 @@ const TaskRow = ({
         onClick={handleRowClick}
       >
         {/* Expand Button (if has description or subtasks) */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {hasDescription || hasSubtasks ? (
             <button
               onClick={(e) => {
@@ -445,7 +507,7 @@ const TaskRow = ({
             e.stopPropagation();
             onToggleCompletion(task.id);
           }}
-          className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+          className={`shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
             task.completed
               ? "bg-blue-600 border-blue-600"
               : "border-gray-300 hover:border-blue-600"
@@ -454,7 +516,7 @@ const TaskRow = ({
           {task.completed && <Check className="w-3 h-3 text-white" />}
         </button>
 
-        {/* Task Title */}
+        {/* Task Title + Dates */}
         <div className="flex-1 min-w-0">
           <p
             className={`text-sm sm:text-base leading-tight ${
@@ -463,10 +525,51 @@ const TaskRow = ({
           >
             {task.title}
           </p>
+          {/* Dates Row: responsive flex/stack */}
+          <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 mt-1">
+            {/* Created Date */}
+            <span className="inline-flex items-center justify-end px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium gap-1 border border-gray-200">
+              <Calendar className="w-3.5 h-3.5 text-gray-400" />
+              Created:{" "}
+              {task.createdAt
+                ? new Date(task.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : "-"}
+            </span>
+            {/* Deadline Date */}
+            {task.deadline && (
+              <span
+                className={`inline-flex items-center justify-end px-2 py-0.5 rounded-full border text-xs font-medium gap-1
+                  ${(() => {
+                    const today = new Date();
+                    const deadline = new Date(task.deadline);
+                    const isOverdue = deadline < today.setHours(0, 0, 0, 0);
+                    const isToday =
+                      deadline.toDateString() === new Date().toDateString();
+                    if (isOverdue)
+                      return "bg-red-100 text-red-700 border-red-200";
+                    if (isToday)
+                      return "bg-orange-100 text-orange-700 border-orange-200";
+                    return "bg-green-100 text-green-700 border-green-200";
+                  })()}`}
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                Due:{" "}
+                {new Date(task.deadline).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Priority Badge with Progress */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Priority Badge with Progress and Deadline */}
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           <span
             className={`flex items-center gap-1.5 px-2.5 py-1 border ${getPriorityColor(
               task.priority
@@ -475,26 +578,49 @@ const TaskRow = ({
             <span>{getPriorityEmoji(task.priority)}</span>
             <span>{task.priority}</span>
           </span>
-          <span className="text-xs text-gray-500 font-medium">
-            {task.progress}%
+          {/* Progress Pie Chart */}
+          <span className="inline-flex items-center justify-center">
+            <svg width="38" height="38" viewBox="0 0 28 28" className="block">
+              <circle
+                cx="14"
+                cy="14"
+                r="12"
+                fill="#F3F4F6"
+                stroke="#E5E7EB"
+                strokeWidth="2"
+              />
+              <circle
+                cx="14"
+                cy="14"
+                r="12"
+                fill="none"
+                stroke="#2563EB"
+                strokeWidth="3"
+                strokeDasharray={2 * Math.PI * 12}
+                strokeDashoffset={
+                  2 * Math.PI * 12 * (1 - (task.progress ?? 0) / 100)
+                }
+                strokeLinecap="round"
+                transform="rotate(-90 14 14)"
+              />
+              <text
+                x="14"
+                y="16"
+                textAnchor="middle"
+                fontSize="8.5"
+                fill="#2563EB"
+                fontWeight="bold"
+              >
+                {Math.round(task.progress ?? 0)}%
+              </text>
+            </svg>
           </span>
         </div>
 
-        {/* Date */}
-        <div className="hidden sm:flex items-center gap-1.5 flex-shrink-0 text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span className="text-sm">
-            {task.createdAt
-              ? new Date(task.createdAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              : "No date"}
-          </span>
-        </div>
+        {/* Date: removed, now shown under title */}
 
         {/* More Options Menu */}
-        <div className="relative flex-shrink-0">
+        <div className="relative shrink-0">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -631,7 +757,7 @@ const SubtaskRow = ({ subtask, parentTaskId, onToggleCompletion }) => {
           e.stopPropagation();
           onToggleCompletion(subtask.id, true, parentTaskId, subtask.completed);
         }}
-        className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
+        className={`shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
           subtask.completed
             ? "bg-blue-600 border-blue-600"
             : "border-gray-300 hover:border-blue-600"

@@ -59,13 +59,13 @@ export const Sidebar = () => {
       {/* Collapse button with SmartTask text */}
       <div className="flex items-center mb-6">
         {!collapsed && (
-          <span className="font-bold text-md md:text-lg lg:text-3xl text-white mr-2 select-none">
+          <h1 className="font-bold text-xs md:text-lg lg:text-2xl mt-2 text-white mr-2 select-none">
             SmartTask
-          </span>
+          </h1>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#DF5B28] text-white transition flex items-center justify-center"
+          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#DF5B28] mt-2 text-white transition flex items-center justify-center"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
@@ -77,15 +77,18 @@ export const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col gap-2">
+      <nav
+        className="flex-1 flex flex-col gap-2 font-bold"
+        style={{ fontFamily: "Proza Libre, sans-serif" }}
+      >
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 p-2 rounded hover:bg-[#DF5B28] hover:text-white transition ${
-                isActive ? "bg-[#C6532A] text-white" : ""
-              }`
+              `flex items-center gap-3 p-2 rounded transition
+              ${isActive ? "bg-[#DF5B28] text-white" : "text-white"}
+              hover:bg-[#DF5B28] hover:text-white`
             }
           >
             {item.icon}
@@ -129,9 +132,9 @@ function LogoutButton({ collapsed }) {
 
   return (
     <button
-      className={`cursor-pointer  flex items-center gap-3 w-full p-2 rounded hover:bg-[#DF5B28] hover:text-white transition mb-2 ${
-        collapsed ? "justify-center" : ""
-      }`}
+      className={`cursor-pointer flex items-center gap-3 w-full p-2 rounded transition mb-2
+        ${collapsed ? "justify-center" : ""}
+        text-white hover:bg-[#DF5B28] hover:text-white bg-transparent`}
       onClick={handleLogout}
     >
       <LogOut className="w-5 h-5" />

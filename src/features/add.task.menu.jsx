@@ -19,6 +19,7 @@ import {
 export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState("Medium");
   const [subtasks, setSubtasks] = useState([]);
   const [attachments, setAttachments] = useState([]);
@@ -118,6 +119,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
       const taskData = {
         taskName: taskTitle,
         description,
+        deadline: deadline ? new Date(deadline) : undefined,
         priority,
         percentageCompleted: 0,
         completionStatus: false,
@@ -164,6 +166,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
   const handleReset = () => {
     setTaskTitle("");
     setDescription("");
+    setDeadline("");
     setPriority("Medium");
     setSubtasks([]);
     setAttachments([]);
@@ -235,6 +238,20 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                     className="w-full px-3 py-2 border-none focus:outline-none resize-none text-sm placeholder:text-gray-400"
                   />
                 </div>
+              </div>
+
+              {/* Deadline */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-900 mb-2">
+                  Deadline
+                </label>
+                <input
+                  type="date"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none text-sm"
+                  min={new Date().toISOString().split("T")[0]}
+                />
               </div>
 
               {/* Priority */}

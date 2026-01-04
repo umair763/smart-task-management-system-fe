@@ -148,10 +148,8 @@ export const AnalyticsPage = () => {
       total: totalTasks,
       percentage:
         totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
-      trend: "up",
       icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-gray-100",
       isPercent: false,
       description: "Total number of tasks completed in the selected period.",
     },
@@ -160,10 +158,8 @@ export const AnalyticsPage = () => {
       count: completionRate,
       total: 100,
       percentage: completionRate,
-      trend: "up",
       icon: CheckCircle,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-gray-100",
       isPercent: true,
       description: "Overall completion rate across tasks.",
     },
@@ -173,10 +169,8 @@ export const AnalyticsPage = () => {
       total: totalTasks,
       percentage:
         totalTasks > 0 ? Math.round((overdueTasks / totalTasks) * 100) : 0,
-      trend: "down",
       icon: AlertCircle,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
+      color: "text-gray-100",
       isPercent: false,
       description: "Tasks that are past their due date.",
     },
@@ -187,7 +181,7 @@ export const AnalyticsPage = () => {
       <div className="max-w-[1600px] mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
             Overview
           </h1>
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -202,7 +196,7 @@ export const AnalyticsPage = () => {
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
-                  className="appearance-none bg-transparent pl-2 pr-8 text-xs sm:text-sm font-semibold text-gray-900 focus:outline-none cursor-pointer"
+                  className="appearance-none bg-transparent pl-2 pr-8 text-xs sm:text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
                 >
                   {["Weekly", "Monthly", "Yearly"].map((opt) => (
                     <option key={opt} value={opt}>
@@ -258,22 +252,8 @@ export const AnalyticsPage = () => {
                     className={`w-5 h-5 sm:w-6 sm:h-6 ${card.color}`}
                   />
                 </div>
-                <div
-                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                    card.trend === "up"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {card.trend === "up" ? (
-                    <TrendingUp className="w-3 h-3" />
-                  ) : (
-                    <TrendingDown className="w-3 h-3" />
-                  )}
-                  {card.percentage}%
-                </div>
               </div>
-              <h3 className="text-xs sm:text-sm font-medium text-gray-200 mb-2">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-100 mb-2">
                 {card.title}
               </h3>
               <div className="flex items-end gap-2 mb-3">
@@ -283,12 +263,12 @@ export const AnalyticsPage = () => {
                     : card.count.toString().padStart(2, "0")}
                 </span>
                 {!card.isPercent && (
-                  <span className="text-sm sm:text-base text-gray-200 mb-1">
+                  <span className="text-sm sm:text-base text-gray-100 mb-1">
                     / {card.total}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-300">{card.description}</p>
+              <p className="text-xs text-gray-100">{card.description}</p>
             </div>
           ))}
         </div>
@@ -298,7 +278,7 @@ export const AnalyticsPage = () => {
           {/* Task Performance Chart */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                 Task Performance Chart
               </h2>
               <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium">
@@ -343,7 +323,7 @@ export const AnalyticsPage = () => {
           {/* Project Travel Chart */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                 Project Travel
               </h2>
               <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium">
@@ -400,7 +380,7 @@ export const AnalyticsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Task Distribution Chart */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">
               Task Distribution Chart
             </h2>
             <div className="flex flex-col sm:flex-row items-center justify-around">
@@ -437,7 +417,7 @@ export const AnalyticsPage = () => {
                       style={{ backgroundColor: item.color }}
                     />
                     <div className="flex flex-col">
-                      <span className="text-xs sm:text-sm font-medium text-gray-900">
+                      <span className="text-xs sm:text-sm font-medium text-gray-800">
                         {item.name}
                       </span>
                       <span className="text-xs text-gray-500">
@@ -461,7 +441,7 @@ export const AnalyticsPage = () => {
 
           {/* Subtasks insights */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">
               Subtasks insights
             </h2>
             <ResponsiveContainer width="100%" height={280}>
