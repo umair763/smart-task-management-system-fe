@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   LineChart,
   Line,
@@ -21,24 +21,70 @@ import {
   TrendingUp,
   TrendingDown,
   CheckCircle,
-  Clock,
   AlertCircle,
 } from "lucide-react";
+import {
+  useGetAnalyticsSummaryQuery,
+  useGetAnalyticsActiveRateQuery,
+  useGetAnalyticsOverdueQuery,
+  useGetAnalyticsTimeseriesQuery,
+  useGetAnalyticsDistributionQuery,
+  useGetTopSubtasksQuery,
+} from "../store/analytics.api";
 
 export const AnalyticsPage = () => {
-  const [dateRange, setDateRange] = useState("Month");
+  const [dateRange, setDateRange] = useState("Monthly");
 
-  // Sample data for Task Performance Chart
-  const taskPerformanceData = [
-    { name: "Wk 1", completed: 30, inProgress: 20, overdue: 10 },
-    { name: "Wk 2", completed: 45, inProgress: 35, overdue: 15 },
-    { name: "Wk 3", completed: 60, inProgress: 50, overdue: 20 },
-    { name: "Wk 4", completed: 80, inProgress: 60, overdue: 25 },
-    { name: "Wk 5", completed: 95, inProgress: 75, overdue: 30 },
-    { name: "June", completed: 70, inProgress: 55, overdue: 20 },
-  ];
+  // Analytics queries
+  const { data: summaryResp, isLoading: loadingSummary } =
+    useGetAnalyticsSummaryQuery();
+  const { data: activeRateResp, isLoading: loadingActive } =
+    useGetAnalyticsActiveRateQuery();
+  const { data: overdueResp, isLoading: loadingOverdue } =
+    useGetAnalyticsOverdueQuery();
 
-  // Sample data for Project Travel Chart
+  const rangeParam = useMemo(() => {
+    switch (dateRange) {
+      case "Weekly":
+        return "weekly";
+      case "Yearly":
+        return "yearly";
+      default:
+        return "monthly";
+    }
+  }, [dateRange]);
+
+  const dateRangeText = useMemo(() => {
+    const now = new Date();
+    const fmt = (d) =>
+      d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    if (dateRange === "Weekly") {
+      const start = new Date(now);
+      start.setDate(now.getDate() - 6);
+      return `${fmt(start)} - ${fmt(now)}`;
+    }
+    if (dateRange === "Monthly") {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      return `${fmt(start)} - ${fmt(now)}`;
+    }
+    // Yearly
+    const start = new Date(now.getFullYear(), 0, 1);
+    const end = new Date(now.getFullYear(), 11, 31);
+    return `${fmt(start)} - ${fmt(end)}`;
+  }, [dateRange]);
+  const { data: timeseriesResp, isLoading: loadingTimeseries } =
+    useGetAnalyticsTimeseriesQuery(rangeParam);
+
+  const { data: distributionResp, isLoading: loadingDistribution } =
+    useGetAnalyticsDistributionQuery(rangeParam);
+  const { data: topSubtasksResp, isLoading: loadingTop } =
+    useGetTopSubtasksQuery(rangeParam);
+
+  // Project Travel Chart (no API provided, keep sample)
   const projectTravelData = [
     { name: "Jan", completed: 20, ongoing: 15, overdue: 5 },
     { name: "Feb 1", completed: 25, ongoing: 20, overdue: 8 },
@@ -47,55 +93,92 @@ export const AnalyticsPage = () => {
     { name: "Feb 4", completed: 40, ongoing: 35, overdue: 15 },
     { name: "June", completed: 45, ongoing: 40, overdue: 18 },
   ];
+  // Derived analytics data
+  const completedTasks = summaryResp?.data?.completedTasks ?? 0;
+  const totalTasks = summaryResp?.data?.totalTasks ?? 0;
+  const completionRate = activeRateResp?.data?.completionRate ?? 0;
+  const overdueTasks = overdueResp?.data?.overdueTasks ?? 0;
 
-  // Sample data for Team Performance
-  const teamPerformanceData = [
-    { name: "AI X", tasks: 80 },
-    { name: "Video", tasks: 60 },
-    { name: "Prototyping & Writing", tasks: 55 },
-    { name: "Q&L", tasks: 90 },
-    { name: "Design", tasks: 100 },
-  ];
+  const timeseriesData = useMemo(() => {
+    const ts = timeseriesResp?.data;
+    if (!ts || !Array.isArray(ts.labels)) return [];
+    const labels = ts.labels || [];
+    const completedArr = ts.completed || [];
+    const overdueArr = ts.overdue || [];
+    return labels.map((label, i) => ({
+      name: label,
+      completed: Number(completedArr[i] ?? 0),
+      overdue: Number(overdueArr[i] ?? 0),
+    }));
+  }, [timeseriesResp]);
 
-  // Sample data for Task Distribution
-  const taskDistributionData = [
-    { name: "To Do", value: 25, color: "#8B5CF6" },
-    { name: "Completed", value: 35, color: "#3B82F6" },
-    { name: "Ongoing", value: 25, color: "#10B981" },
-    { name: "Overdue", value: 15, color: "#1E293B" },
-  ];
+  const taskDistributionData = useMemo(() => {
+    const d = distributionResp?.data;
+    if (!d) return [];
+    if (Array.isArray(d.taskDistributionData)) return d.taskDistributionData;
+    const series = Array.isArray(d.series) ? d.series : [];
+    return series.map((s) => ({
+      name: s.name,
+      value: Array.isArray(s.data)
+        ? s.data.reduce((sum, v) => sum + (Number(v) || 0), 0)
+        : 0,
+      color: s.color || "#9CA3AF",
+    }));
+  }, [distributionResp]);
 
-  // Stats cards data
+  const teamPerformanceData = useMemo(() => {
+    const top = topSubtasksResp?.data;
+    const tasks = Array.isArray(top?.tasks) ? top.tasks : [];
+    // New timeseries shape: sum per task across labels
+    if (tasks.length && Array.isArray(tasks[0]?.data)) {
+      return tasks.map((t) => ({
+        name: t.taskName,
+        tasks: t.data.reduce((sum, v) => sum + (Number(v) || 0), 0),
+      }));
+    }
+    // Legacy shape fallback
+    return tasks.map((t) => ({ name: t.taskName, tasks: t.subtaskCount || 0 }));
+  }, [topSubtasksResp]);
+
+  // Stats cards (dynamic from API)
   const statsCards = [
     {
       title: "Task Completed",
-      count: 25,
-      total: 74,
-      percentage: 50,
+      count: completedTasks,
+      total: totalTasks,
+      percentage:
+        totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
       trend: "up",
       icon: CheckCircle,
       color: "text-green-600",
       bgColor: "bg-green-50",
+      isPercent: false,
+      description: "Total number of tasks completed in the selected period.",
     },
     {
-      title: "Task in Progress",
-      count: 8,
-      total: 56,
-      percentage: 15,
+      title: "Active rate",
+      count: completionRate,
+      total: 100,
+      percentage: completionRate,
       trend: "up",
-      icon: Clock,
+      icon: CheckCircle,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
+      isPercent: true,
+      description: "Overall completion rate across tasks.",
     },
     {
       title: "Task Overdue",
-      count: 4,
-      total: 35,
-      percentage: 25,
+      count: overdueTasks,
+      total: totalTasks,
+      percentage:
+        totalTasks > 0 ? Math.round((overdueTasks / totalTasks) * 100) : 0,
       trend: "down",
       icon: AlertCircle,
       color: "text-red-600",
       bgColor: "bg-red-50",
+      isPercent: false,
+      description: "Tasks that are past their due date.",
     },
   ];
 
@@ -107,23 +190,56 @@ export const AnalyticsPage = () => {
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
             Overview
           </h1>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg border border-gray-200 text-sm">
-              <Calendar className="w-4 h-4 text-gray-600" />
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="bg-transparent border-none outline-none text-gray-700 text-xs sm:text-sm cursor-pointer"
-              >
-                <option>Month</option>
-                <option>Week</option>
-                <option>Year</option>
-              </select>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+            {/* Time Range Dropdown */}
+            <div className="relative">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-white/80 backdrop-blur-md border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-xs sm:text-sm text-gray-500 font-medium">
+                  Time Series
+                </span>
+
+                <select
+                  value={dateRange}
+                  onChange={(e) => setDateRange(e.target.value)}
+                  className="appearance-none bg-transparent pl-2 pr-8 text-xs sm:text-sm font-semibold text-gray-900 focus:outline-none cursor-pointer"
+                >
+                  {["Weekly", "Monthly", "Yearly"].map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Dropdown arrow */}
+                <svg
+                  className="absolute right-3 w-4 h-4 text-gray-400 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
             </div>
-            <div className="px-3 py-2 bg-white rounded-lg border border-gray-200 text-xs sm:text-sm text-gray-700">
-              May 01 - Jun 12, 2025
+
+            {/* Date Range Text */}
+            <div className="px-4 py-2.5 bg-white/70 backdrop-blur-md border border-gray-200 rounded-xl text-xs sm:text-sm font-medium text-gray-700 shadow-sm">
+              {dateRangeText}
             </div>
-            <button className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg text-xs sm:text-sm font-medium hover:bg-blue-700 transition-colors">
+
+            {/* Export Button */}
+            <button
+              className="relative px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white 
+               bg-gradient-to-r from-blue-600 to-indigo-600 
+               hover:from-blue-700 hover:to-indigo-700 
+               active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
+            >
               Export
             </button>
           </div>
@@ -162,19 +278,17 @@ export const AnalyticsPage = () => {
               </h3>
               <div className="flex items-end gap-2 mb-3">
                 <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-100">
-                  {card.count.toString().padStart(2, "0")}
+                  {card.isPercent
+                    ? `${card.count}%`
+                    : card.count.toString().padStart(2, "0")}
                 </span>
-                <span className="text-sm sm:text-base text-gray-200 mb-1">
-                  / {card.total}
-                </span>
+                {!card.isPercent && (
+                  <span className="text-sm sm:text-base text-gray-200 mb-1">
+                    / {card.total}
+                  </span>
+                )}
               </div>
-              <p className="text-xs text-gray-300">
-                {card.title === "Task Completed"
-                  ? "This is the total number of tasks you have completed in this time."
-                  : card.title === "Task in Progress"
-                  ? "This is the number of tasks that are in activity progress."
-                  : "This is the number of tasks that are yet to be completed and got passed their due date."}
-              </p>
+              <p className="text-xs text-gray-300">{card.description}</p>
             </div>
           ))}
         </div>
@@ -192,7 +306,7 @@ export const AnalyticsPage = () => {
               </button>
             </div>
             <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={taskPerformanceData}>
+              <LineChart data={timeseriesData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis
                   dataKey="name"
@@ -211,21 +325,14 @@ export const AnalyticsPage = () => {
                 <Line
                   type="monotone"
                   dataKey="completed"
-                  stroke="#8B5CF6"
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="inProgress"
-                  stroke="#F472B6"
+                  stroke="#10B981"
                   strokeWidth={2}
                   dot={{ r: 4 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="overdue"
-                  stroke="#10B981"
+                  stroke="#EF4444"
                   strokeWidth={2}
                   dot={{ r: 4 }}
                 />
@@ -291,10 +398,71 @@ export const AnalyticsPage = () => {
 
         {/* Bottom Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
-          {/* Team Performance */}
+          {/* Task Distribution Chart */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-              Team Performance
+              Task Distribution Chart
+            </h2>
+            <div className="flex flex-col sm:flex-row items-center justify-around">
+              <ResponsiveContainer width="60%" height={280}>
+                <PieChart>
+                  <Pie
+                    data={taskDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {taskDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#98ABC3",
+                      border: "none",
+                      borderRadius: "8px",
+                      color: "#fff",
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-col gap-3 mt-4 sm:mt-0">
+                {taskDistributionData.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-xs sm:text-sm font-medium text-gray-900">
+                        {item.name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {(() => {
+                          const total = taskDistributionData.reduce(
+                            (sum, it) => sum + (Number(it.value) || 0),
+                            0
+                          );
+                          const val = Number(item.value) || 0;
+                          return total > 0
+                            ? `${Math.round((val / total) * 100)}%`
+                            : "0%";
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Subtasks insights */}
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+              Subtasks insights
             </h2>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart
@@ -339,58 +507,6 @@ export const AnalyticsPage = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
-
-          {/* Task Distribution Chart */}
-          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-              Task Distribution Chart
-            </h2>
-            <div className="flex flex-col sm:flex-row items-center justify-around">
-              <ResponsiveContainer width="60%" height={280}>
-                <PieChart>
-                  <Pie
-                    data={taskDistributionData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {taskDistributionData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1F2937",
-                      border: "none",
-                      borderRadius: "8px",
-                      color: "#fff",
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex flex-col gap-3 mt-4 sm:mt-0">
-                {taskDistributionData.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="text-xs sm:text-sm font-medium text-gray-900">
-                        {item.name}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {item.value}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

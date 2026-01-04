@@ -26,3 +26,13 @@ export {
   useUpdateTaskMutation,
   useDeleteTaskMutation,
 } from "./tasks.api";
+
+// Export analytics API hooks
+export {
+  useGetAnalyticsSummaryQuery,
+  useGetAnalyticsActiveRateQuery,
+  useGetAnalyticsOverdueQuery,
+  useGetAnalyticsTimeseriesQuery,
+  useGetAnalyticsDistributionQuery,
+  useGetTopSubtasksQuery,
+} from "./analytics.api";

@@ -13,6 +13,12 @@ import {
 import { useGetAllTasksQuery } from "../store/tasks.api";
 import { useGetCurrentUserQuery } from "../store/auth.api";
 import { useSelector } from "react-redux";
+import {
+  useGetAnalyticsSummaryQuery,
+  useGetAnalyticsOverdueQuery,
+  useGetAnalyticsTimeseriesQuery,
+  useGetAnalyticsDistributionQuery,
+} from "../store/analytics.api";
 
 function StatCard({ title, value }) {
   return (
@@ -62,6 +68,22 @@ export const DashboardPage = () => {
 
   const [profileImageLoadError, setProfileImageLoadError] = useState(false);
 
+  // Analytics filters scoped to visuals
+  const [barRange, setBarRange] = useState("Yearly");
+  const [distRange, setDistRange] = useState("Weekly");
+  const mapRange = (label) =>
+    label === "Weekly" ? "weekly" : label === "Yearly" ? "yearly" : "monthly";
+
+  // Analytics queries
+  const { data: summaryResp } = useGetAnalyticsSummaryQuery();
+  const { data: overdueResp } = useGetAnalyticsOverdueQuery();
+  const { data: timeseriesResp } = useGetAnalyticsTimeseriesQuery(
+    mapRange(barRange)
+  );
+  const { data: distributionResp } = useGetAnalyticsDistributionQuery(
+    mapRange(distRange)
+  );
+
   const extractTasksArray = (response) => {
     if (!response) return [];
     if (Array.isArray(response)) return response;
@@ -98,6 +120,33 @@ export const DashboardPage = () => {
 
   const startOfDay = (date) => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  const normalizePriority = (value) => {
+    if (!value) return null;
+    const s = String(value).trim().toLowerCase();
+    switch (s) {
+      case "urgent":
+        return "Urgent";
+      case "high":
+        return "High";
+      case "medium":
+        return "Medium";
+      case "low":
+        return "Low";
+      case "delayed":
+        return "Delayed";
+      default:
+        return null;
+    }
+  };
+
+  const extractPriority = (task) => {
+    const raw = task?.priority;
+    if (!raw) return null;
+    if (typeof raw === "string") return normalizePriority(raw);
+    if (typeof raw?.label === "string") return normalizePriority(raw.label);
+    return null;
   };
 
   const getDueDate = (task) => {
@@ -139,34 +188,41 @@ export const DashboardPage = () => {
       total > 0 ? Math.round(((total - overdue) / total) * 100) : 0;
 
     const pending = Math.max(0, total - completed - overdue);
-    const taskDistributionData = total
-      ? [
-          {
-            name: "Completed",
-            value: Math.round((completed / total) * 100),
-            color: "#F0F0F0",
-          },
-          {
-            name: "Overdue",
-            value: Math.round((overdue / total) * 100),
-            color: "#A855F7",
-          },
-          {
-            name: "Pending",
-            value: Math.max(
-              0,
-              100 -
-                Math.round((completed / total) * 100) -
-                Math.round((overdue / total) * 100)
-            ),
-            color: "#4B5563",
-          },
-        ]
-      : [
-          { name: "Completed", value: 0, color: "#F0F0F0" },
-          { name: "Overdue", value: 0, color: "#A855F7" },
-          { name: "Pending", value: 0, color: "#4B5563" },
-        ];
+
+    // Priority-based distribution (counts by priority)
+    const priorityLabels = ["Urgent", "High", "Medium", "Low", "Delayed"];
+    const priorityColors = {
+      Urgent: "#ef4444", // red
+      High: "#f59e0b", // amber
+      Medium: "#fbbf24", // yellow
+      Low: "#22c55e", // green
+      Delayed: "#9ca3af", // gray
+    };
+    const priorityEmojis = {
+      Urgent: "Urgent",
+      High: "High",
+      Medium: "Medium",
+      Low: "Low",
+      Delayed: "Delayed",
+    };
+
+    const priorityCounts = priorityLabels.reduce((acc, label) => {
+      acc[label] = 0;
+      return acc;
+    }, {});
+
+    for (const t of tasksArray) {
+      const p = extractPriority(t);
+      if (p && priorityCounts[p] !== undefined) {
+        priorityCounts[p] += 1;
+      }
+    }
+
+    const taskDistributionData = priorityLabels.map((label) => ({
+      name: priorityEmojis[label],
+      value: priorityCounts[label],
+      color: priorityColors[label],
+    }));
 
     // Productivity: previous 7 days (last week) for current month (task counts)
     const last7Days = Array.from({ length: 7 }, (_, idx) => {
@@ -251,6 +307,75 @@ export const DashboardPage = () => {
     };
   }, [apiTasks]);
 
+  // Analytics-derived data
+  const summaryTotal = summaryResp?.data?.totalTasks;
+  const summaryCompleted = summaryResp?.data?.completedTasks;
+  const overdueCount = overdueResp?.data?.overdueTasks;
+
+  const timeseriesBarData = useMemo(() => {
+    const ts = timeseriesResp?.data;
+    if (!ts || !Array.isArray(ts.labels)) return [];
+    const labels = ts.labels || [];
+    const completedArr = ts.completed || [];
+    // Format x-axis labels for better fit
+    if (barRange === "Yearly") {
+      // e.g. "2025"
+      return labels.map((label, i) => ({
+        name: String(label),
+        value: Number(completedArr[i] ?? 0),
+      }));
+    }
+    if (barRange === "Monthly") {
+      // e.g. "2025-03" or "2025-12"
+      return labels.map((label, i) => {
+        // Try to parse as YYYY-MM
+        const parts = String(label).split("-");
+        let short = label;
+        if (parts.length === 2) {
+          const month = Number(parts[1]);
+          const monthNames = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          short = monthNames[month - 1] || label;
+        }
+        return { name: short, value: Number(completedArr[i] ?? 0) };
+      });
+    }
+    // Weekly: label is date string, show weekday short
+    return labels.map((label, i) => {
+      let short = label;
+      try {
+        const d = new Date(label);
+        short = d.toLocaleDateString("en-US", { weekday: "short" });
+      } catch {}
+      return { name: short, value: Number(completedArr[i] ?? 0) };
+    });
+  }, [timeseriesResp, barRange]);
+
+  const overviewDistributionData = useMemo(() => {
+    const d = distributionResp?.data;
+    if (!d) return [];
+    const series = Array.isArray(d.series) ? d.series : [];
+    return series.map((s) => ({
+      name: s.name,
+      value: Array.isArray(s.data)
+        ? s.data.reduce((sum, v) => sum + (Number(v) || 0), 0)
+        : 0,
+      color: s.color || "#9CA3AF",
+    }));
+  }, [distributionResp]);
+
   const displayUser =
     currentUser?.user || currentUser?.data?.user || currentUser || user;
   const displayName =
@@ -295,15 +420,17 @@ export const DashboardPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Tasks"
-          value={isLoading ? "-" : dashboardData.stats.total}
+          value={isLoading ? "-" : summaryTotal ?? dashboardData.stats.total}
         />
         <StatCard
           title="Completed"
-          value={isLoading ? "-" : dashboardData.stats.completed}
+          value={
+            isLoading ? "-" : summaryCompleted ?? dashboardData.stats.completed
+          }
         />
         <StatCard
           title="Overdue"
-          value={isLoading ? "-" : dashboardData.stats.overdue}
+          value={isLoading ? "-" : overdueCount ?? dashboardData.stats.overdue}
         />
         <StatCard
           title="Active"
@@ -313,31 +440,62 @@ export const DashboardPage = () => {
 
       {/* Main panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Productivity */}
+        {/* Left: Completed Trend */}
         <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg text-white font-semibold">Productivity</h3>
-            <div className="text-sm text-gray-100">
-              This Month • Last 7 Days
+            <h3 className="text-lg text-white font-semibold">Completed</h3>
+            <div className="flex items-center rounded-md border border-white/20 overflow-hidden">
+              {["Weekly", "Monthly", "Yearly"].map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => setBarRange(opt)}
+                  className={`${
+                    barRange === opt
+                      ? "bg-white/20 text-white"
+                      : "bg-transparent text-gray-100 hover:bg-white/10"
+                  } px-2 sm:px-3 py-1 text-xs sm:text-sm`}
+                >
+                  {opt}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="h-48 -ml-6">
-            <Bar data={dashboardData.productivityData} />
+            <Bar data={timeseriesBarData} />
           </div>
         </div>
 
         {/* Right: Task Overview (pie) */}
         <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
-          <h3 className="text-lg text-white font-semibold mb-4 self-start">
-            Task Overview
-          </h3>
+          <div className="flex items-center justify-between w-full mb-4">
+            <h3 className="text-lg text-white font-semibold self-start">
+              Task Overview
+            </h3>
+            <div className="flex items-center rounded-md border border-white/20 overflow-hidden ml-4">
+              {["Weekly", "Monthly", "Yearly"].map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => setDistRange(opt)}
+                  className={`${
+                    distRange === opt
+                      ? "bg-white/20 text-white"
+                      : "bg-transparent text-gray-100 hover:bg-white/10"
+                  } px-2 sm:px-3 py-1 text-xs sm:text-sm`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="w-full py-1">
             <div className="flex flex-col sm:flex-row items-center justify-around">
               <ResponsiveContainer width="60%" height={200}>
                 <RePieChart>
                   <Pie
-                    data={dashboardData.taskDistributionData}
+                    data={overviewDistributionData}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -345,13 +503,13 @@ export const DashboardPage = () => {
                     paddingAngle={2}
                     dataKey="value"
                   >
-                    {dashboardData.taskDistributionData.map((entry, index) => (
+                    {overviewDistributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#1F2937",
+                      backgroundColor: "#98ABC3",
                       border: "none",
                       borderRadius: "8px",
                       color: "#fff",
@@ -361,20 +519,15 @@ export const DashboardPage = () => {
               </ResponsiveContainer>
 
               <div className="flex flex-col gap-3 mt-4 sm:mt-0">
-                {dashboardData.taskDistributionData.map((item, index) => (
+                {overviewDistributionData.map((item, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
-                    <div className="flex flex-col">
-                      <span className="text-xs sm:text-sm font-medium text-white">
-                        {item.name}
-                      </span>
-                      <span className="text-xs text-gray-200">
-                        {item.value}%
-                      </span>
-                    </div>
+                    <span className="text-xs sm:text-sm font-medium text-white">
+                      {item.name}
+                    </span>
                   </div>
                 ))}
               </div>
