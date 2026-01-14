@@ -8,10 +8,14 @@ import {
   Check,
   Bell,
   Paperclip,
+  FileText,
+  FileImage,
+  FileVideo,
   Trash2,
   Calendar,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
 import { AddTaskMenu } from "./index";
 import {
   useGetAllTasksQuery,
@@ -431,8 +435,87 @@ const TaskRow = ({
   openMenuId,
   setOpenMenuId,
 }) => {
+  const token = useSelector((state) => state?.auth?.token);
   const hasSubtasks = (task.subtaskCount ?? 0) > 0;
   const hasDescription = task.description && task.description.trim();
+
+  const getAttachmentDownloadUrl = (attachment) => {
+    if (!attachment) return null;
+
+    const baseUrl = import.meta?.env?.VITE_API_URL;
+    const origin = (() => {
+      try {
+        return new URL(baseUrl).origin;
+      } catch {
+        return window.location.origin;
+      }
+    })();
+
+    const url = attachment.url;
+    if (typeof url === "string" && url.trim()) {
+      if (/^https?:\/\//i.test(url)) return url;
+      if (url.startsWith("/")) return `${origin}${url}`;
+      return `${origin}/${url}`;
+    }
+
+    // Fallback for GridFS-style attachments (backend route may differ)
+    const fileId = attachment.fileId;
+    if (fileId) {
+      return `${baseUrl}/files/${fileId}`;
+    }
+
+    return null;
+  };
+
+  const downloadAttachment = async (attachment) => {
+    const url = getAttachmentDownloadUrl(attachment);
+    if (!url) return;
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      });
+
+      if (!res.ok) {
+        throw new Error(`Download failed (${res.status})`);
+      }
+
+      const blob = await res.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      
+      // Build proper filename with extension
+      let filename = attachment.filename || attachment.name || "attachment";
+      const format = attachment.format;
+      
+      // Ensure filename has the correct extension
+      if (format && !filename.toLowerCase().endsWith(`.${format.toLowerCase()}`)) {
+        filename = `${filename}.${format}`;
+      }
+      
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      console.error("Failed to download attachment", e);
+      // Fallback: open in a new tab (may still allow user to download)
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const getAttachmentIcon = (attachment) => {
+    const type = String(attachment?.type || "").toLowerCase();
+    const format = String(attachment?.format || "").toLowerCase();
+
+    if (type === "image" || ["png", "jpg", "jpeg"].includes(format)) return FileImage;
+    if (type === "video" || ["mp4", "mkv", "mov"].includes(format)) return FileVideo;
+    return FileText;
+  };
 
   const {
     data: subtasksResponse,
@@ -570,14 +653,49 @@ const TaskRow = ({
 
         {/* Priority Badge with Progress and Deadline */}
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
-          <span
-            className={`flex items-center gap-1.5 px-2.5 py-1 border ${getPriorityColor(
-              task.priority
-            )} text-xs font-medium rounded-full whitespace-nowrap`}
-          >
-            <span>{getPriorityEmoji(task.priority)}</span>
-            <span>{task.priority}</span>
-          </span>
+          <div className="flex flex-col items-end gap-1">
+            <span
+              className={`flex items-center gap-1.5 px-2.5 py-1 border ${getPriorityColor(
+                task.priority
+              )} text-xs font-medium rounded-full whitespace-nowrap`}
+            >
+              <span>{getPriorityEmoji(task.priority)}</span>
+              <span>{task.priority}</span>
+            </span>
+
+            {Array.isArray(task.attachments) && task.attachments.length > 0 && (
+              <div className="flex items-center gap-1">
+                {task.attachments.slice(0, 3).map((att, idx) => {
+                  const Icon = getAttachmentIcon(att);
+                  const label = att?.filename || att?.name || `Attachment ${idx + 1}`;
+                  return (
+                    <button
+                      key={`${task.id}-att-${idx}`}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadAttachment(att);
+                      }}
+                      title={`Download: ${label}`}
+                      className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-gray-200 bg-white/70 text-gray-600 hover:text-gray-900 hover:bg-white hover:shadow-sm transition-all"
+                    >
+                      <Icon className="w-4 h-4" />
+                    </button>
+                  );
+                })}
+
+                {task.attachments.length > 3 && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-600 bg-gray-100 border border-gray-200 rounded-full"
+                    title={`${task.attachments.length} attachments`}
+                  >
+                    <Paperclip className="w-3 h-3" />+{task.attachments.length - 3}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Progress Pie Chart */}
           <span className="inline-flex items-center justify-center">
             <svg width="38" height="38" viewBox="0 0 28 28" className="block">

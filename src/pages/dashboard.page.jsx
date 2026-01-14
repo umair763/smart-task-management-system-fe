@@ -22,7 +22,7 @@ import {
 
 function StatCard({ title, value }) {
   return (
-    <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-4 w-full">
+    <div className="bg-[#006D77] border border-white/5 rounded-2xl p-4 w-full">
       <div className="flex items-center justify-between">
         <div>
           <div className="text-sm text-white">{title}</div>
@@ -441,7 +441,7 @@ export const DashboardPage = () => {
       {/* Main panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Completed Trend */}
-        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6">
+        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg text-white font-semibold">Completed</h3>
             <div className="flex items-center rounded-md border border-white/20 overflow-hidden">
@@ -468,7 +468,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Right: Task Overview (pie) */}
-        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
+        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
           <div className="flex items-center justify-between w-full mb-4">
             <h3 className="text-lg text-white font-semibold self-start">
               Task Overview
@@ -538,7 +538,7 @@ export const DashboardPage = () => {
 
       {/* Bottom row: Top performer & Recent */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6 flex gap-6 items-center">
+        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6 flex gap-6 items-center">
           <div className="w-20 h-20 rounded-full overflow-hidden">
             {candidateUrl && !profileImageLoadError ? (
               <img
@@ -602,7 +602,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#C6532A] border border-white/5 rounded-2xl p-6">
+        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6">
           <h3 className="text-white font-semibold mb-4">Recently Added</h3>
           <div className="space-y-4">
             {isLoading ? (

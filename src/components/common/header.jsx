@@ -53,7 +53,7 @@ export const Header = () => {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <header className="w-[98%] h-18 flex items-center px-4 md:px-8 rounded-3xl bg-[#C6532A] mt-1 ml-2 mx-auto">
+    <header className="w-[98%] h-18 flex items-center px-4 md:px-8 rounded-3xl bg-[#006D77] mt-1 ml-2 mx-auto">
       {/* Search bar */}
       <div className="flex-1 flex items-center text-white font-extrabold text-xs md:text-2xl lg:text-2xl">
         <h1>Transform Chaos Into Clarity</h1>

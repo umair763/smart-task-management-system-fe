@@ -17,7 +17,7 @@ export const TasksPage = () => {
     <div className="">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-[#C6532A] rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
+        <div className="bg-[#006D77] rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col gap-4">
             {/* Search Bar */}
             <div className="relative">
@@ -113,7 +113,7 @@ export const TasksPage = () => {
                   bottom: -2px;
                   height: 2px;
                   width: 100%;
-                  background: linear-gradient(90deg, #fff 0%, #C6532A 100%);
+                  background: linear-gradient(90deg, #fff 0%, #006D77 100%);
                   animation: tabPulse 1.2s cubic-bezier(.4,0,.2,1) infinite;
                   border-radius: 2px;
                   transform-origin: left;

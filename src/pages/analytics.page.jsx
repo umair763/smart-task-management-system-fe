@@ -244,7 +244,7 @@ export const AnalyticsPage = () => {
           {statsCards.map((card, index) => (
             <div
               key={index}
-              className="bg-[#C6532A] rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow"
+              className="bg-[#006D77] rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-2 sm:p-3 rounded-lg ${card.bgColor}`}>

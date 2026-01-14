@@ -52,7 +52,7 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 bg-[#C6532A] text-[#020202] rounded-tr-3xl rounded-br-3xl
+      className={`fixed top-0 left-0 z-40 bg-[#006D77] text-[#020202] rounded-tr-3xl rounded-br-3xl
                   h-screen p-4 flex flex-col transition-[width] duration-300 ease-in-out
                   ${collapsed ? "w-17" : "w-60"}`}
     >
@@ -65,7 +65,7 @@ export const Sidebar = () => {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#DF5B28] mt-2 text-white transition flex items-center justify-center"
+          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#1A7F88] mt-2 text-white transition flex items-center justify-center"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
@@ -87,8 +87,8 @@ export const Sidebar = () => {
             to={item.path}
             className={({ isActive }) =>
               `flex items-center gap-3 p-2 rounded transition
-              ${isActive ? "bg-[#DF5B28] text-white" : "text-white"}
-              hover:bg-[#DF5B28] hover:text-white`
+              ${isActive ? "bg-[#1A7F88] text-white" : "text-white"}
+              hover:bg-[#1A7F88] hover:text-white`
             }
           >
             {item.icon}
@@ -134,7 +134,7 @@ function LogoutButton({ collapsed }) {
     <button
       className={`cursor-pointer flex items-center gap-3 w-full p-2 rounded transition mb-2
         ${collapsed ? "justify-center" : ""}
-        text-white hover:bg-[#DF5B28] hover:text-white bg-transparent`}
+        text-white hover:bg-[#1A7F88] hover:text-white bg-transparent`}
       onClick={handleLogout}
     >
       <LogOut className="w-5 h-5" />

@@ -3,11 +3,23 @@ import { api } from "./api";
 export const tasksApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createTask: builder.mutation({
-      query: (taskData) => ({
-        url: "/tasks",
-        method: "POST",
-        body: taskData,
-      }),
+      query: (taskData) => {
+        // If taskData is FormData, send as-is (for file uploads)
+        if (taskData instanceof FormData) {
+          return {
+            url: "/tasks",
+            method: "POST",
+            body: taskData,
+            formData: true,
+          };
+        }
+        // Otherwise, send as JSON
+        return {
+          url: "/tasks",
+          method: "POST",
+          body: taskData,
+        };
+      },
       invalidatesTags: ["Tasks"],
     }),
     getAllTasks: builder.query({

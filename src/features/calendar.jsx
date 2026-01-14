@@ -172,7 +172,7 @@ export const Calendar = () => {
           <button
             onClick={handlePrevMonth}
             aria-label="Previous month"
-            className="p-1.5 sm:p-2 lg:p-2 rounded-full bg-purple-100 text-gray-600 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center"
+            className="p-1.5 sm:p-2 lg:p-2 rounded-full bg-[#006D77]/35 text-gray-600 hover:bg-[#006D77]/20 cursor-pointer text-gray-100 transition-colors duration-200 flex items-center justify-center"
           >
             <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
           </button>
@@ -184,7 +184,7 @@ export const Calendar = () => {
           <button
             onClick={handleNextMonth}
             aria-label="Next month"
-            className="p-1.5 sm:p-2 lg:p-2 rounded-full bg-purple-100 text-gray-600 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center"
+            className="p-1.5 sm:p-2 lg:p-2 rounded-full bg-[#006D77]/35 text-gray-600 hover:bg-[#006D77]/20 cursor-pointer text-gray-100 transition-colors duration-200 flex items-center justify-center"
           >
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
           </button>
@@ -217,16 +217,24 @@ export const Calendar = () => {
         </h3>
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-red-500"></span>
+            <span className="w-3 h-3 rounded-full bg-red-600"></span>
+            <span className="text-sm text-gray-700">Urgent Priority</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-orange-500"></span>
             <span className="text-sm text-gray-700">High Priority</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
             <span className="text-sm text-gray-700">Medium Priority</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
             <span className="text-sm text-gray-700">Low Priority</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full bg-gray-300 border border-gray-400"></span>
+            <span className="text-sm text-gray-700">Delayed</span>
           </div>
         </div>
       </div>

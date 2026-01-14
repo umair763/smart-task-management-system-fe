@@ -10,7 +10,7 @@ export const MainLayout = () => {
   // if (location.pathname === "/") return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="min-h-screen bg-[#C6532A]/35">
+    <div className="min-h-screen bg-[#006D77]/35">
       {/* Two-column layout: left = sidebar (fixed full height), right = header + content */}
       <div className="flex w-full">
         {/* Sidebar: fixed full height, no vertical scroll */}

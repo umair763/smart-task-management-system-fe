@@ -300,9 +300,9 @@ export const Settings = () => {
   return (
     <div className="">
       {/* Main Content */}
-      <div className="">
+      <div className="w-[99%]">
         {/* Profile Card Header */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6">
+        <div className="bg-[#006D77] rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="relative group">
@@ -350,7 +350,7 @@ export const Settings = () => {
                     );
                   })()}
                 </div>
-                <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <label className="absolute inset-0 flex items-center justify-center bg-white/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                   <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   <input
                     type="file"
@@ -361,7 +361,7 @@ export const Settings = () => {
                 </label>
               </div>
               <div>
-                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-gray-900">
+                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-white">
                   {(() => {
                     const currentUserValue =
                       currentUser?.user ||
@@ -376,7 +376,7 @@ export const Settings = () => {
                     );
                   })()}
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-600 truncate max-w-[200px] sm:max-w-none">
+                <p className="text-xs sm:text-sm text-gray-100 truncate max-w-[200px] sm:max-w-none">
                   {(() => {
                     const currentUserValue =
                       currentUser?.user ||
@@ -392,23 +392,24 @@ export const Settings = () => {
         </div>
 
         {/* Tabs and Content */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="bg-[#006D77] rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
           {/* Tab Navigation */}
-          <div className="border-b border-gray-200 overflow-x-auto scrollbar-hide">
+          <div className="border-b border-gray-200 bg-[#F4F8F8] overflow-x-auto scrollbar-hide">
             <nav
               className="flex gap-1 sm:gap-4 md:gap-6 px-2 sm:px-4 md:px-6"
               aria-label="Tabs"
             >
               {tabs.map((tab) => {
                 const Icon = tab.icon;
+
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-1.5 hover:cursor-pointer sm:gap-2 py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-1.5 sm:gap-2 cursor-pointer py-3 sm:py-4 px-2 sm:px-3 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
                       activeTab === tab.id
-                        ? "border-blue-600 text-blue-600"
-                        : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
+                        ? "border-[#006D77] text-[#006D77]"
+                        : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300 hover:bg-[#EDF5F6]"
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -427,10 +428,10 @@ export const Settings = () => {
             {activeTab === "profile" && (
               <div className="max-w-3xl">
                 <div className="mb-4 sm:mb-6">
-                  <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 mb-1.5 sm:mb-2">
+                  <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-1.5 sm:mb-2">
                     Profile Information
                   </h2>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-100">
                     Update your personal information and manage your account
                   </p>
                 </div>
@@ -442,7 +443,7 @@ export const Settings = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-5">
                     {/* First Name */}
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         First Name
                       </label>
                       <input
@@ -454,14 +455,14 @@ export const Settings = () => {
                             firstName: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         required
                       />
                     </div>
 
                     {/* Last Name */}
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         Last Name
                       </label>
                       <input
@@ -473,14 +474,14 @@ export const Settings = () => {
                             lastName: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 text-gray-100 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         required
                       />
                     </div>
 
                     {/* Username */}
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         Username
                       </label>
                       <input
@@ -492,14 +493,14 @@ export const Settings = () => {
                             username: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         required
                       />
                     </div>
 
                     {/* Title */}
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         Title
                       </label>
                       <input
@@ -511,14 +512,14 @@ export const Settings = () => {
                             title: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         placeholder="e.g. Product Manager"
                       />
                     </div>
 
                     {/* Email */}
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         Email Address
                       </label>
                       <input
@@ -530,14 +531,14 @@ export const Settings = () => {
                             email: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         required
                       />
                     </div>
 
                     {/* Description - Full Width */}
                     <div className="md:col-span-2">
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                         Description
                       </label>
                       <textarea
@@ -549,24 +550,24 @@ export const Settings = () => {
                           })
                         }
                         rows="3"
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all"
                         placeholder="Tell us a bit about yourself..."
                       />
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
+                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                     <button
                       type="button"
-                      className="w-full cursor-pointer sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full cursor-pointer sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-300 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isUpdating}
-                      className="w-full cursor-pointer sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-[#C6532A] rounded-lg hover:bg-[#ba4f29] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full cursor-pointer sm:w-auto px-6 py-2 text-xs sm:text-sm font-medium text-white bg-[#1A7F88] rounded-lg hover:bg-[#005A63] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isUpdating ? "Saving..." : "Save Changes"}
                     </button>
@@ -583,7 +584,7 @@ export const Settings = () => {
                   <div className="p-1.5 sm:p-2 bg-gray-100 rounded-lg">
                     <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                   </div>
-                  <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+                  <h3 className="text-sm sm:text-base font-semibold text-white">
                     Password Management
                   </h3>
                 </div>
@@ -592,7 +593,7 @@ export const Settings = () => {
                   className="space-y-3 sm:space-y-5 mb-8"
                 >
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                       Current password
                     </label>
                     <div className="relative">
@@ -605,7 +606,7 @@ export const Settings = () => {
                             currentPassword: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all pr-10"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all pr-10"
                         placeholder="••••••••"
                         required
                       />
@@ -614,7 +615,7 @@ export const Settings = () => {
                         onClick={() =>
                           setShowCurrentPassword(!showCurrentPassword)
                         }
-                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 cursor-pointer"
                       >
                         {showCurrentPassword ? (
                           <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -625,7 +626,7 @@ export const Settings = () => {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                       New password
                     </label>
                     <div className="relative">
@@ -638,14 +639,14 @@ export const Settings = () => {
                             newPassword: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all pr-10"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all pr-10"
                         placeholder="••••••••"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 cursor-pointer"
                       >
                         {showNewPassword ? (
                           <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -654,12 +655,12 @@ export const Settings = () => {
                         )}
                       </button>
                     </div>
-                    <p className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs text-gray-500">
+                    <p className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs text-gray-100">
                       Your new password must be more than 8 characters.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-white mb-1.5 sm:mb-2">
                       Confirm new password
                     </label>
                     <div className="relative">
@@ -672,7 +673,7 @@ export const Settings = () => {
                             confirmPassword: e.target.value,
                           })
                         }
-                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all pr-10"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-transparent outline-none transition-all pr-10"
                         placeholder="••••••••"
                         required
                       />
@@ -681,7 +682,7 @@ export const Settings = () => {
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
-                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 cursor-pointer"
                       >
                         {showConfirmPassword ? (
                           <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -691,7 +692,7 @@ export const Settings = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200">
+                  <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                     <button
                       type="button"
                       onClick={() =>
@@ -701,13 +702,13 @@ export const Settings = () => {
                           confirmPassword: "",
                         })
                       }
-                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium hover:cursor-pointer text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium hover:cursor-pointer text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-300 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm hover:cursor-pointer font-medium text-white bg-[#DF5B28] rounded-lg hover:bg-[#c95324] transition-colors"
+                      className="w-full sm:w-auto px-6 py-2 text-xs sm:text-sm hover:cursor-pointer font-medium text-white bg-[#1A7F88] rounded-lg hover:bg-[#005A63] transition-colors"
                     >
                       Update password
                     </button>
@@ -717,7 +718,7 @@ export const Settings = () => {
                 {/* Notification Section: Only Email Reminder for Task Deadline */}
                 <div className="space-y-5 sm:space-y-8">
                   <div>
-                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+                    <h3 className="text-sm text-white sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
                       <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
                         <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
                       </div>
@@ -726,10 +727,10 @@ export const Settings = () => {
                     <div className="space-y-4 pl-10">
                       <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                         <div>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium text-white">
                             Tasks deadline
                           </p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-100 mt-0.5">
                             Receive an email a day before a task's deadline to
                             help you stay on track.
                           </p>
@@ -745,7 +746,7 @@ export const Settings = () => {
                               },
                             }))
                           }
-                          className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full transition-colors shrink-0 ${
+                          className={`relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full cursor-pointer transition-colors shrink-0 ${
                             notificationSettings.emailNotifications.taskDeadline
                               ? "bg-blue-600"
                               : "bg-gray-200"

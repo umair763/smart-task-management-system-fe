@@ -115,17 +115,21 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
     setIsSubmitting(true);
     try {
-      // Create the main task with correct field names
-      const taskData = {
-        taskName: taskTitle,
-        description,
-        deadline: deadline ? new Date(deadline) : undefined,
-        priority,
-        percentageCompleted: 0,
-        completionStatus: false,
-      };
+      // Create FormData for multipart upload (supports file attachments)
+      const formData = new FormData();
+      formData.append("taskName", taskTitle);
+      if (description) formData.append("description", description);
+      if (deadline) formData.append("deadline", new Date(deadline).toISOString());
+      formData.append("priority", priority);
+      formData.append("percentageCompleted", "0");
+      formData.append("completionStatus", "false");
 
-      const result = await createTask(taskData).unwrap();
+      // Attach the first file if present (backend supports single file)
+      if (attachments.length > 0 && attachments[0].file) {
+        formData.append("attachment", attachments[0].file);
+      }
+
+      const result = await createTask(formData).unwrap();
       const createdTaskId = result.data?._id || result._id || result.id;
 
       console.log("Created task with ID:", createdTaskId);
@@ -187,7 +191,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 "
           />
 
           {/* Side Panel */}
@@ -196,16 +200,16 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 h-full w-full sm:w-[500px] md:w-[600px] lg:w-[700px] bg-white shadow-2xl z-50 flex flex-col"
+            className="fixed right-0 top-0 rounded-tl-3xl rounded-bl-3xl h-full w-full sm:w-[500px] md:w-[600px] lg:w-[700px] bg-[#0D808A] shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+            <div className="flex items-center justify-between px-4 py-3">
+              <h2 className="text-base sm:text-lg font-semibold text-white">
                 Create a new task
               </h2>
               <button
                 onClick={handleClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-lg"
+                className="text-gray-100 cursor-pointer transition-colors p-1 hover:bg-[#006D77]/35 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -220,8 +224,8 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                     type="text"
                     value={taskTitle}
                     onChange={(e) => setTaskTitle(e.target.value)}
-                    placeholder="Click here and start typing"
-                    className="w-full text-sm sm:text-base font-medium px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors placeholder:text-gray-400"
+                    placeholder="Task name"
+                    className="w-full text-sm sm:text-base font-medium px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-gray-200 text-gray-200 focus:outline-none transition-colors placeholder:text-gray-200"
                     autoFocus
                   />
                 </div>
@@ -229,34 +233,34 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
               {/* Description */}
               <div>
-                <div className="border-2 border-gray-200 rounded-lg focus-within:border-blue-500 transition-colors">
+                <div className="border-2 border-gray-300 rounded-lg focus-within:border-gray-300  transition-colors">
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
                     rows="2"
-                    className="w-full px-3 py-2 border-none focus:outline-none resize-none text-sm placeholder:text-gray-400"
+                    className="w-full px-3 py-2 border-none focus:outline-none resize-none text-sm placeholder:text-gray-200 text-gray-200"
                   />
                 </div>
               </div>
 
               {/* Deadline */}
               <div>
-                <label className="block text-xs font-semibold text-gray-900 mb-2">
+                <label className="block text-xs font-semibold text-white mb-2">
                   Deadline
                 </label>
                 <input
                   type="date"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none text-sm"
+                  className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-gray-200 text-gray-100 focus:outline-none text-sm"
                   min={new Date().toISOString().split("T")[0]}
                 />
               </div>
 
               {/* Priority */}
               <div>
-                <h3 className="text-xs font-semibold text-gray-900 mb-2">
+                <h3 className="text-xs font-semibold text-white mb-2">
                   Priority
                 </h3>
                 <div className="grid grid-cols-5 gap-1.5">
@@ -270,14 +274,14 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                     <button
                       key={item.label}
                       onClick={() => setPriority(item.label)}
-                      className={`flex flex-col items-center gap-0.5 p-2 rounded-lg border-2 transition-all ${
+                      className={`flex flex-col items-center  gap-0.5 p-2 cursor-pointer rounded-lg border-2 transition-all ${
                         priority === item.label
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-gray-300  bg-blue-100 text-gray-800"
+                          : "border-gray-300 hover:border-gray-300 text-gray-100"
                       }`}
                     >
                       <span className="text-xl">{item.emoji}</span>
-                      <span className="text-[10px] font-medium text-gray-700">
+                      <span className="text-[10px] font-medium">
                         {item.label}
                       </span>
                     </button>
@@ -287,7 +291,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
               {/* Subtasks */}
               <div>
-                <h3 className="text-xs font-semibold text-gray-900 mb-2">
+                <h3 className="text-xs font-semibold text-white mb-2">
                   Subtasks
                 </h3>
                 <div className="space-y-1.5">
@@ -300,8 +304,8 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                         onClick={() => handleSubtaskToggle(subtask.id)}
                         className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
                           subtask.completed
-                            ? "bg-blue-600 border-blue-600"
-                            : "border-gray-300 hover:border-blue-600"
+                            ? "bg-gray-100 border-gray-100"
+                            : "border-gray-300 hover:border-white-100"
                         }`}
                       >
                         {subtask.completed && (
@@ -315,13 +319,13 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                           handleSubtaskChange(subtask.id, e.target.value)
                         }
                         placeholder="Enter subtask"
-                        className={`flex-1 px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors ${
+                        className={`flex-1 px-2.5 py-1.5 text-gray-100 text-sm border border-gray-300 rounded-lg focus:border-gray-200  focus:outline-none transition-colors ${
                           subtask.completed ? "line-through text-gray-400" : ""
                         }`}
                       />
                       <button
                         onClick={() => handleRemoveSubtask(subtask.id)}
-                        className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-1"
+                        className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all cursor-pointer  p-1"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -330,7 +334,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
                   <button
                     onClick={handleAddSubtask}
-                    className="flex items-center gap-2 px-2.5 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full"
+                    className="flex items-center gap-2 px-2.5 py-1.5 text-sm text-gray-100 hover:text-gray-300 cursor-pointer rounded-lg transition-colors w-full"
                   >
                     <span className="text-base">+</span>
                     <span>Add another subtask</span>
@@ -340,7 +344,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
 
               {/* Attachments */}
               <div>
-                <h3 className="text-xs font-semibold text-gray-900 mb-2">
+                <h3 className="text-xs font-semibold text-white mb-2">
                   Attachments
                 </h3>
 
@@ -352,8 +356,8 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                   onClick={() => fileInputRef.current?.click()}
                   className={`border-2 border-dashed rounded-lg p-3 text-center cursor-pointer transition-all ${
                     isDragging
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 hover:border-gray-400 bg-gray-50"
+                      ? "border-gray-300  bg-blue-50"
+                      : "border-gray-300 hover:border-gray-400 bg-[#006D77]/35"
                   }`}
                 >
                   <div className="flex flex-col items-center gap-1.5">
@@ -361,10 +365,10 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                       <Upload className="w-4 h-4 text-gray-600" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-700 font-medium">
+                      <p className="text-xs text-gray-100 font-medium">
                         Upload a file or drag and drop
                       </p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">
+                      <p className="text-[10px] text-gray-100 mt-0.5">
                         PNG, JPG, PDF or DOCX up to 10MB
                       </p>
                     </div>
@@ -386,7 +390,7 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
                     {attachments.map((attachment) => (
                       <div
                         key={attachment.id}
-                        className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border border-gray-200 group hover:bg-gray-100 transition-colors"
+                        className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border border-gray-300 group hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex-shrink-0 w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
                           <Paperclip className="w-3 h-3 text-blue-600" />
@@ -413,17 +417,17 @@ export const AddTaskMenu = ({ isOpen, onClose, onSave }) => {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-4 py-3 border-t border-gray-200 bg-gray-50">
+            <div className=" flex items-center justify-end gap-3 px-4 py-3 border-t border-gray-300 bg-gray-50">
               <button
                 onClick={handleClose}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+                className=" px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={!taskTitle.trim() || isSubmitting}
-                className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="px-6 py-2 cursor-pointer text-sm font-medium text-white bg-blue-400 hover:bg-blue-500 rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Creating..." : "Save task"}
               </button>
