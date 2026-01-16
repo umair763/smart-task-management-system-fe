@@ -6,3 +6,5 @@ export * from "./404.page";
 export * from "./tasks.page";
 export * from "./analytics.page";
 export * from "./settings";
+export * from "./forgot-password.page";
+export * from "./reset-password.page";

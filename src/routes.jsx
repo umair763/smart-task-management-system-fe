@@ -10,6 +10,8 @@ import {
   TasksPage,
   AnalyticsPage,
   Settings,
+  ForgotPasswordPage,
+  ResetPasswordPage,
 } from "./pages";
 
 export const routes = createBrowserRouter([
@@ -28,6 +30,14 @@ export const routes = createBrowserRouter([
   {
     path: "/signup",
     element: <RegisterPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPasswordPage />,
   },
   {
     element: <MainLayout />,

@@ -16,6 +16,8 @@ export {
   useGetCurrentUserQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } from "./auth.api";
 
 // Export all tasks API hooks

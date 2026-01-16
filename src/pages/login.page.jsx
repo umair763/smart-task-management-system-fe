@@ -101,7 +101,7 @@ export const LoginPage = () => {
                   />
                   <span className="text-gray-600">Remember me</span>
                 </label>
-                <Link to="/" className="text-purple-600">
+                <Link to="/forgot-password" className="text-purple-600">
                   Forgot password?
                 </Link>
               </div>
