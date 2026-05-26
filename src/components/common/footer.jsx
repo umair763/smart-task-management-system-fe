@@ -5,7 +5,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-12 pb-6">
+    <footer className="bg-[#134E4A] text-[#CCFBF1] pt-12 pb-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Links */}
 
@@ -13,22 +13,22 @@ export const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-2 mb-2">
-                <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
+                <div className="bg-[#0D9488] p-2 rounded-lg">
                   <CheckCircle className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="text-white font-bold">Smart Todo</h4>
+                <h4 className="text-white font-bold">SmartTask</h4>
               </div>
-              <p className="text-gray-400 text-sm max-w-70">
+              <p className="text-[#94A3B8] text-sm max-w-70">
                 Transform chaos into clarity with intelligent task management.
               </p>
             </div>
             <div>
               <h5 className="text-white font-semibold mb-4">Product</h5>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-[#94A3B8]">
                 <li>
                   <a
                     href="#features"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#CCFBF1] transition-colors"
                   >
                     Features
                   </a>
@@ -36,7 +36,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href="#pricing"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#CCFBF1] transition-colors"
                   >
                     Pricing
                   </a>
@@ -44,7 +44,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href="#security"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[#CCFBF1] transition-colors"
                   >
                     Security
                   </a>
@@ -59,7 +59,7 @@ export const Footer = () => {
                 href="https://github.com"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white"
+                className="hover:text-[#CCFBF1] transition-colors"
               >
                 <Github className="h-5 w-5" />
               </a>
@@ -67,7 +67,7 @@ export const Footer = () => {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white"
+                className="hover:text-[#CCFBF1] transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -75,13 +75,13 @@ export const Footer = () => {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white"
+                className="hover:text-[#CCFBF1] transition-colors"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
                 href="mailto:support@smarttodo.com"
-                className="hover:text-white"
+                className="hover:text-[#CCFBF1] transition-colors"
               >
                 <Mail className="h-5 w-5" />
               </a>
@@ -90,19 +90,19 @@ export const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-700 mb-6" />
+        <div className="border-t border-[#0D9488]/30 mb-6" />
 
         {/* Bottom */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>© {currentYear} Smart Todo. All rights reserved.</p>
+        <div className="flex flex-col md:flex-row justify-between items-center text-[#94A3B8] text-sm">
+          <p>© {currentYear} SmartTask. All rights reserved.</p>
           <div className="flex space-x-4 mt-2 md:mt-0">
-            <Link to="/terms" className="hover:text-white">
+            <Link to="/terms" className="hover:text-[#CCFBF1] transition-colors">
               Terms
             </Link>
-            <Link to="/privacy" className="hover:text-white">
+            <Link to="/privacy" className="hover:text-[#CCFBF1] transition-colors">
               Privacy
             </Link>
-            <Link to="/support" className="hover:text-white">
+            <Link to="/support" className="hover:text-[#CCFBF1] transition-colors">
               Support
             </Link>
           </div>

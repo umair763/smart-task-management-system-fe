@@ -40,7 +40,7 @@ export const LandingPage = () => {
       title: "Intelligent Task Management",
       description:
         "Create tasks with dependencies, subtasks, and priorities. Watch your workflow optimize itself as you work.",
-      color: "from-purple-500 to-pink-500",
+      color: "bg-[#0D9488]/10 text-[#0D9488]",
     },
     // {
     //    icon: Users,
@@ -53,28 +53,28 @@ export const LandingPage = () => {
       title: "Smart Reminders & Notifications",
       description:
         "Smart reminders that learn your patterns. Get notified when dependencies are ready.",
-      color: "from-green-500 to-emerald-500",
+      color: "bg-[#EA580C]/10 text-[#EA580C]",
     },
     {
       icon: FileText,
       title: "Rich Context & Attachments",
       description:
         "Add notes, files, images. Everything related to your task lives in one spot.",
-      color: "from-orange-500 to-red-500",
+      color: "bg-[#0891B2]/10 text-[#0891B2]",
     },
     {
       icon: BarChart,
       title: "Powerful Analytics",
       description:
         "See patterns, track progress, identify bottlenecks. Make data-driven decisions about your time.",
-      color: "from-indigo-500 to-purple-500",
+      color: "bg-[#059669]/10 text-[#059669]",
     },
     {
       icon: Smartphone,
       title: "Universal Access",
       description:
         "Beautiful dark/light themes. Works perfectly on phone, tablet, desktop. Always in sync.",
-      color: "from-teal-500 to-blue-500",
+      color: "bg-[#D97706]/10 text-[#D97706]",
     },
   ];
 
@@ -106,15 +106,15 @@ export const LandingPage = () => {
   ];
 
   const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
+    initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 },
+    transition: { duration: 0.35, ease: [0, 0, 0.2, 1] },
   };
 
   const staggerContainer = {
     animate: {
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.07,
       },
     },
   };
@@ -132,11 +132,11 @@ export const LandingPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="bg-linear-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
+              <div className="bg-[#0D9488] p-2 rounded-lg">
                 <CheckCircle className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Smart Todo
+              <span className="text-xl font-bold text-[#0D9488]">
+                SmartTask
               </span>
             </motion.div>
 
@@ -144,31 +144,31 @@ export const LandingPage = () => {
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
-                className="text-gray-600  hover:text-purple-600 transition-colors"
+                className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
               >
                 Features
               </a>
               <a
                 href="#pricing"
-                className="text-gray-600  hover:text-purple-600 transition-colors"
+                className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
               >
                 Pricing
               </a>
               <a
                 href="#security"
-                className="text-gray-600  hover:text-purple-600 transition-colors"
+                className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
               >
                 Security
               </a>
               <Link
                 to="/login"
-                className="text-gray-600  hover:text-purple-600 transition-colors"
+                className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
               >
                 Sign In
               </Link>
               <Link
                 to="/login"
-                className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                className="bg-[#EA580C] text-white px-6 py-2 rounded-lg hover:bg-[#C2410C] hover:shadow-lg active:scale-[0.98] transition-all duration-200 font-semibold"
               >
                 Get Started Free
               </Link>
@@ -198,31 +198,31 @@ export const LandingPage = () => {
               <div className="flex flex-col space-y-4">
                 <a
                   href="#features"
-                  className="text-gray-600  hover:text-purple-600 transition-colors"
+                  className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
                 >
                   Features
                 </a>
                 <a
                   href="#pricing"
-                  className="text-gray-600  hover:text-purple-600 transition-colors"
+                  className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
                 >
                   Pricing
                 </a>
                 <a
                   href="#security"
-                  className="text-gray-600  hover:text-purple-600 transition-colors"
+                  className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
                 >
                   Security
                 </a>
                 <Link
                   to="/auth/login"
-                  className="text-gray-600  hover:text-purple-600 transition-colors"
+                  className="text-[#475569] hover:text-[#0D9488] transition-colors font-medium"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/auth/register"
-                  className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-lg text-center"
+                  className="bg-[#EA580C] text-white px-6 py-2 rounded-lg text-center font-semibold hover:bg-[#C2410C] transition-colors"
                 >
                   Get Started Free
                 </Link>
@@ -233,7 +233,7 @@ export const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 bg-linear-to-br from-[#9406E6] to-[#00FFFF]">
+      <section className="pt-24 pb-20 bg-gradient-to-br from-[#0D9488] via-[#0D9488] to-[#0F766E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -244,23 +244,23 @@ export const LandingPage = () => {
               transition={{ duration: 0.8 }}
             >
               <motion.h1
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6"
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
               >
                 Transform{" "}
-                <span className="bg-linear-to-r from-yellow-400 via-pink-500 to-red-400 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="text-[#FED7AA]">
                   Chaos
                 </span>{" "}
                 Into{" "}
-                <span className="bg-linear-to-r from-green-400 via-cyan-500 to-blue-400 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="text-[#CCFBF1]">
                   Clarity
                 </span>
               </motion.h1>
 
               <motion.p
-                className="text-xl text-gray-800 mb-8 leading-relaxed font-semibold drop-shadow"
+                className="text-lg text-white/85 mb-8 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -278,19 +278,19 @@ export const LandingPage = () => {
               >
                 <Link
                   to="/auth/register"
-                  className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2"
+                  className="bg-[#EA580C] text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-[#C2410C] hover:shadow-xl hover:shadow-orange-500/25 active:scale-[0.98] transition-all duration-200 flex items-center justify-center space-x-2"
                 >
                   <span>Start Organizing Smarter</span>
                   <ArrowRight className="h-5 w-5" />
                 </Link>
-                <button className="border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-purple-600 hover:text-white transition-all duration-200 flex items-center justify-center space-x-2">
+                <button className="border-2 border-white/50 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-white/10 transition-all duration-200 flex items-center justify-center space-x-2">
                   <Play className="h-5 w-5" />
                   <span>Watch Demo</span>
                 </button>
               </motion.div>
 
               <motion.div
-                className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-gray-800 "
+                className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-white/80"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -317,7 +317,7 @@ export const LandingPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <div className="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
+              <div className="relative bg-white rounded-2xl shadow-2xl p-6 border border-[#E2E8F0]">
                 {/* Mock App Interface */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -339,19 +339,19 @@ export const LandingPage = () => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
                     >
-                      <div className="w-4 h-4 border-2 border-purple-400 rounded"></div>
+                      <div className="w-4 h-4 border-2 border-[#0D9488] rounded"></div>
                       <div className="flex-1">
                         <div className="h-3 bg-gray-300 rounded w-3/4"></div>
                         <div className="h-2 bg-gray-200 rounded w-1/2 mt-1"></div>
                       </div>
-                      <div className="w-6 h-6 bg-purple-100 rounded-full"></div>
+                      <div className="w-6 h-6 bg-[#CCFBF1] rounded-full"></div>
                     </motion.div>
                   ))}
                 </div>
 
                 {/* Floating Elements */}
                 <motion.div
-                  className="absolute -top-4 -right-4 bg-linear-to-r from-purple-500 to-blue-500 text-white p-3 rounded-lg shadow-lg"
+                  className="absolute -top-4 -right-4 bg-[#0D9488] text-white p-3 rounded-lg shadow-lg shadow-teal-500/30"
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -359,7 +359,7 @@ export const LandingPage = () => {
                 </motion.div>
 
                 <motion.div
-                  className="absolute -bottom-4 -left-4 bg-linear-to-r from-green-500 to-emerald-500 text-white p-3 rounded-lg shadow-lg"
+                  className="absolute -bottom-4 -left-4 bg-[#EA580C] text-white p-3 rounded-lg shadow-lg shadow-orange-500/30"
                   animate={{ y: [0, 10, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 1 }}
                 >
@@ -399,9 +399,9 @@ export const LandingPage = () => {
                 onHoverStart={() => setActiveFeature(index)}
               >
                 <div
-                  className={`inline-flex p-3 rounded-lg bg-linear-to-r ${feature.color} mb-4`}
+                  className={`inline-flex p-3 rounded-xl ${feature.color} mb-4`}
                 >
-                  <feature.icon className="h-6 w-6 text-white" />
+                  <feature.icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   {feature.title}
@@ -409,7 +409,7 @@ export const LandingPage = () => {
                 <p className="text-gray-600  leading-relaxed">
                   {feature.description}
                 </p>
-                <motion.div className="absolute inset-0 bg-linear-to-r from-purple-500/5 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <motion.div className="absolute inset-0 bg-[#0D9488]/4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             ))}
           </motion.div>
@@ -417,7 +417,7 @@ export const LandingPage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-linear-to-br from-gray-50 to-blue-50">
+      <section className="py-20 bg-gradient-to-br from-[#F8FAFC] to-[#F0FDFA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -461,10 +461,10 @@ export const LandingPage = () => {
                 viewport={{ once: true }}
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-20 h-20 bg-[#0D9488] rounded-full flex items-center justify-center mx-auto mb-4">
                     <step.icon className="h-8 w-8 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 bg-white text-purple-600 font-bold text-sm px-2 py-1 rounded-full border-2 border-purple-600">
+                  <div className="absolute -top-2 -right-2 bg-white text-[#0D9488] font-bold text-sm px-2 py-1 rounded-full border-2 border-[#0D9488]">
                     {step.step}
                   </div>
                 </div>
@@ -527,7 +527,7 @@ export const LandingPage = () => {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="py-20 bg-linear-to-br from-purple-50 to-blue-50"
+        className="py-20 bg-gradient-to-br from-[#F0FDFA] to-[#F8FAFC]"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center mb-16" {...fadeInUp}>
@@ -587,8 +587,8 @@ export const LandingPage = () => {
                 key={index}
                 className={`relative bg-white p-8 rounded-xl shadow-lg border-2 ${
                   plan.popular
-                    ? "border-purple-500 scale-105"
-                    : "border-gray-200"
+                    ? "border-[#0D9488] scale-105"
+                    : "border-[#E2E8F0]"
                 }`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -597,7 +597,7 @@ export const LandingPage = () => {
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-linear-to-r from-purple-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-[#0D9488] text-white px-4 py-1 rounded-full text-sm font-semibold">
                       Most Popular
                     </span>
                   </div>
@@ -634,8 +634,8 @@ export const LandingPage = () => {
                 <button
                   className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
                     plan.popular
-                      ? "bg-linear-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg transform hover:scale-105"
-                      : "border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
+                      ? "bg-[#EA580C] text-white hover:bg-[#C2410C] hover:shadow-lg active:scale-[0.98]"
+                      : "border-2 border-[#0D9488] text-[#0D9488] hover:bg-[#0D9488] hover:text-white"
                   }`}
                 >
                   {plan.cta}
@@ -689,7 +689,7 @@ export const LandingPage = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="w-16 h-16 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#0D9488] rounded-full flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -703,7 +703,7 @@ export const LandingPage = () => {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-linear-to-r from-purple-600 via-blue-600 to-cyan-600">
+      <section className="py-20 bg-gradient-to-br from-[#0D9488] via-[#0D9488] to-[#0F766E]">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -720,12 +720,12 @@ export const LandingPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/auth/register"
-                className="bg-white text-purple-600 px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2"
+                className="bg-white text-[#0D9488] px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl active:scale-[0.98] transition-all duration-200 flex items-center justify-center space-x-2"
               >
                 <span>Start Your Free Account</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-purple-600 transition-all duration-200">
+              <button className="border-2 border-white/50 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-white/10 transition-all duration-200">
                 Schedule Demo
               </button>
             </div>

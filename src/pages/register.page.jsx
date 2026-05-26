@@ -62,11 +62,11 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 md:p-4 lg:p-4">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-2 md:p-4 lg:p-4">
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
         <AnimatedSection
           direction="left"
-          className="hidden md:flex md:w-1/2 bg-linear-to-br from-purple-700 via-indigo-700 to-black text-white p-6 items-center justify-center"
+          className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#0D9488] via-[#0D9488] to-[#0F766E] text-white p-6 items-center justify-center"
         >
           <div className="max-w-lg">
             <h2 className="text-2xl font-extrabold mb-2">Create an account</h2>
@@ -85,7 +85,7 @@ export const RegisterPage = () => {
               <h2 className="text-xl font-bold">Create an account</h2>
               <p className="text-sm text-gray-500 mt-1">
                 Already have an account?{" "}
-                <Link to="/login" className="text-purple-600 font-semibold">
+                <Link to="/login" className="text-[#0D9488] font-semibold hover:text-[#0F766E] transition-colors">
                   Log in
                 </Link>
               </p>
@@ -100,7 +100,7 @@ export const RegisterPage = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                    className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                     placeholder="Fletcher"
                   />
                 </div>
@@ -112,7 +112,7 @@ export const RegisterPage = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
-                    className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                    className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                     placeholder="Last name"
                   />
                 </div>
@@ -125,7 +125,7 @@ export const RegisterPage = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                   placeholder="Username"
                 />
               </div>
@@ -138,7 +138,7 @@ export const RegisterPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                   placeholder="you@company.com"
                 />
               </div>
@@ -150,7 +150,7 @@ export const RegisterPage = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="2"
-                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                   placeholder="Tell us a bit about yourself..."
                 />
               </div>
@@ -163,7 +163,7 @@ export const RegisterPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="mt-0.5 block w-full rounded-md border-gray-200 shadow-sm p-2 focus:ring-2 focus:ring-purple-500"
+                  className="mt-0.5 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] p-2 focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all"
                   placeholder="Enter your password"
                 />
               </div>
@@ -172,11 +172,11 @@ export const RegisterPage = () => {
                   type="checkbox"
                   checked={agree}
                   onChange={(e) => setAgree(e.target.checked)}
-                  className="h-4 w-4 text-purple-600"
+                  className="h-4 w-4 accent-[#0D9488]"
                 />
                 <span>
                   I agree to the{" "}
-                  <a href="#" className="text-purple-600">
+                  <a href="#" className="text-[#0D9488] hover:text-[#0F766E] transition-colors">
                     Terms & Conditions
                   </a>
                 </span>
@@ -184,7 +184,7 @@ export const RegisterPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#0D9488] text-white py-2 rounded-lg font-semibold hover:bg-[#0F766E] active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Creating account..." : "Create account"}
               </button>

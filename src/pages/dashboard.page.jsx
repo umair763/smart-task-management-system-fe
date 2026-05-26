@@ -22,11 +22,11 @@ import {
 
 function StatCard({ title, value }) {
   return (
-    <div className="bg-[#006D77] border border-white/5 rounded-2xl p-4 w-full">
+    <div className="bg-white border border-[#E2E8F0] border-l-4 border-l-[#0D9488] rounded-2xl p-5 w-full shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm text-white">{title}</div>
-          <div className="text-2xl font-bold text-white mt-2">{value}</div>
+          <div className="text-sm font-medium text-[#475569]">{title}</div>
+          <div className="text-2xl font-bold text-[#0F172A] mt-2">{value}</div>
         </div>
       </div>
     </div>
@@ -42,17 +42,20 @@ function Bar({ data = [] }) {
           data={data}
           margin={{ top: 8, right: 8, left: 1, bottom: 8 }}
         >
-          <XAxis dataKey="name" tick={{ fill: "#FFFFFF" }} />
+          <XAxis dataKey="name" tick={{ fill: "#475569", fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis
-            tick={{ fill: "#FFFFFF" }}
+            tick={{ fill: "#475569", fontSize: 12 }}
             allowDecimals={false}
             domain={[0, "dataMax"]}
+            axisLine={false}
+            tickLine={false}
           />
           <Tooltip
-            wrapperStyle={{ background: "#0f1724", borderRadius: 8 }}
+            contentStyle={{ background: "#0F172A", border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }}
+            cursor={{ fill: "rgba(13,148,136,0.08)" }}
             formatter={(val) => [`${val}`, "Tasks"]}
           />
-          <ReBar dataKey="value" fill="#F0F0F0" radius={[8, 8, 0, 0]} />
+          <ReBar dataKey="value" fill="#0D9488" radius={[6, 6, 0, 0]} />
         </ReBarChart>
       </ResponsiveContainer>
     </div>
@@ -402,16 +405,16 @@ export const DashboardPage = () => {
   }, [candidateUrl]);
 
   return (
-    <div className="w-full mx-auto p-4 rounded-3xl text-gray-800">
+    <div className="w-full mx-auto">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold ">Dashboard</h1>
-          <p className="text-sm text-gray-800">
+          <h1 className="text-2xl font-bold text-[#0F172A]">Dashboard</h1>
+          <p className="text-sm text-[#475569]">
             Track team performance & project insights at a glance.
           </p>
         </div>
-        <button className="bg-white text-gray-800 px-4 py-2 rounded-full text-sm shadow-md">
+        <button className="bg-white text-[#0F172A] border border-[#E2E8F0] px-4 py-2 rounded-xl text-sm font-medium shadow-sm hover:shadow-md hover:border-[#0D9488] transition-all duration-200">
           Export
         </button>
       </div>
@@ -441,10 +444,10 @@ export const DashboardPage = () => {
       {/* Main panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Completed Trend */}
-        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg text-white font-semibold">Completed</h3>
-            <div className="flex items-center rounded-md border border-white/20 overflow-hidden">
+            <h3 className="text-lg font-semibold text-[#0F172A]">Completed</h3>
+            <div className="flex items-center rounded-lg border border-[#E2E8F0] overflow-hidden bg-[#F8FAFC]">
               {["Weekly", "Monthly", "Yearly"].map((opt) => (
                 <button
                   key={opt}
@@ -452,9 +455,9 @@ export const DashboardPage = () => {
                   onClick={() => setBarRange(opt)}
                   className={`${
                     barRange === opt
-                      ? "bg-white/20 text-white"
-                      : "bg-transparent text-gray-100 hover:bg-white/10"
-                  } px-2 sm:px-3 py-1 text-xs sm:text-sm`}
+                      ? "bg-[#0D9488] text-white"
+                      : "bg-transparent text-[#475569] hover:bg-[#F1F5F9]"
+                  } px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium transition-colors duration-150`}
                 >
                   {opt}
                 </button>
@@ -468,12 +471,12 @@ export const DashboardPage = () => {
         </div>
 
         {/* Right: Task Overview (pie) */}
-        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center">
           <div className="flex items-center justify-between w-full mb-4">
-            <h3 className="text-lg text-white font-semibold self-start">
+            <h3 className="text-lg font-semibold text-[#0F172A] self-start">
               Task Overview
             </h3>
-            <div className="flex items-center rounded-md border border-white/20 overflow-hidden ml-4">
+            <div className="flex items-center rounded-lg border border-[#E2E8F0] overflow-hidden bg-[#F8FAFC] ml-4">
               {["Weekly", "Monthly", "Yearly"].map((opt) => (
                 <button
                   key={opt}
@@ -481,9 +484,9 @@ export const DashboardPage = () => {
                   onClick={() => setDistRange(opt)}
                   className={`${
                     distRange === opt
-                      ? "bg-white/20 text-white"
-                      : "bg-transparent text-gray-100 hover:bg-white/10"
-                  } px-2 sm:px-3 py-1 text-xs sm:text-sm`}
+                      ? "bg-[#0D9488] text-white"
+                      : "bg-transparent text-[#475569] hover:bg-[#F1F5F9]"
+                  } px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium transition-colors duration-150`}
                 >
                   {opt}
                 </button>
@@ -509,10 +512,11 @@ export const DashboardPage = () => {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#98ABC3",
+                      backgroundColor: "#0F172A",
                       border: "none",
                       borderRadius: "8px",
                       color: "#fff",
+                      fontSize: 12,
                     }}
                   />
                 </RePieChart>
@@ -525,7 +529,7 @@ export const DashboardPage = () => {
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-xs sm:text-sm font-medium text-white">
+                    <span className="text-xs sm:text-sm font-medium text-[#475569]">
                       {item.name}
                     </span>
                   </div>
@@ -538,7 +542,7 @@ export const DashboardPage = () => {
 
       {/* Bottom row: Top performer & Recent */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6 flex gap-6 items-center">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm flex gap-6 items-center">
           <div className="w-20 h-20 rounded-full overflow-hidden">
             {candidateUrl && !profileImageLoadError ? (
               <img
@@ -556,12 +560,12 @@ export const DashboardPage = () => {
             )}
           </div>
           <div>
-            <div className="text-white font-semibold">{displayName}</div>
-            <div className="text-sm text-gray-400">{displayRole}</div>
-            <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-gray-100">
+            <div className="font-semibold text-[#0F172A]">{displayName}</div>
+            <div className="text-sm text-[#475569]">{displayRole}</div>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-[#475569]">
               <div>
                 Task Completed{" "}
-                <span className="text-white font-bold">
+                <span className="text-[#0F172A] font-bold">
                   {isLoading
                     ? "-"
                     : `${dashboardData.stats.completed}/${dashboardData.stats.total}`}
@@ -569,22 +573,22 @@ export const DashboardPage = () => {
               </div>
               <div>
                 On-time Delivery{" "}
-                <span className="text-white font-bold">
+                <span className="text-[#0F172A] font-bold">
                   {isLoading ? "-" : `${dashboardData.stats.onTimeDelivery}%`}
                 </span>
               </div>
               <div>
                 Streak{" "}
-                <span className="text-white font-bold">
+                <span className="text-[#0F172A] font-bold">
                   {isLoading
                     ? "-"
                     : `${dashboardData.stats.streakDays} day(s) in row`}
                 </span>
               </div>
               <div className="col-span-2 mt-3">
-                <div className="bg-white/20 rounded-full h-3 overflow-hidden">
+                <div className="bg-[#E2E8F0] rounded-full h-2.5 overflow-hidden">
                   <div
-                    className="h-3 bg-white rounded-full"
+                    className="h-2.5 bg-[#0D9488] rounded-full transition-all duration-500"
                     style={{
                       width: isLoading
                         ? "0%"
@@ -592,7 +596,7 @@ export const DashboardPage = () => {
                     }}
                   />
                 </div>
-                <div className="text-xs text-gray-100 mt-2">
+                <div className="text-xs text-[#475569] mt-2">
                   {isLoading
                     ? "Loading…"
                     : `${dashboardData.stats.completionAvg}% task completion rate`}
@@ -602,21 +606,19 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#006D77] border border-white/5 rounded-2xl p-6">
-          <h3 className="text-white font-semibold mb-4">Recently Added</h3>
-          <div className="space-y-4">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm">
+          <h3 className="font-semibold text-[#0F172A] mb-4">Recently Added</h3>
+          <div className="space-y-3">
             {isLoading ? (
-              <div className="text-sm text-gray-300">Loading…</div>
+              <div className="text-sm text-[#94A3B8]">Loading…</div>
             ) : dashboardData.recentlyAdded.length === 0 ? (
-              <div className="text-sm text-gray-300">No recent tasks</div>
+              <div className="text-sm text-[#94A3B8]">No recent tasks</div>
             ) : (
               dashboardData.recentlyAdded.map((item) => (
-                <div key={item.id}>
-                  <div className="flex items-center justify-between text-sm text-gray-50 mb-1">
-                    <div>{item.title}</div>
-                    <div className="text-xs text-gray-50">
-                      {item.createdAtText}
-                    </div>
+                <div key={item.id} className="flex items-center justify-between py-2 border-b border-[#F1F5F9] last:border-0">
+                  <div className="text-sm font-medium text-[#0F172A] truncate pr-3">{item.title}</div>
+                  <div className="text-xs text-[#94A3B8] whitespace-nowrap shrink-0">
+                    {item.createdAtText}
                   </div>
                 </div>
               ))

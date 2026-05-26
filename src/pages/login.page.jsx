@@ -47,7 +47,7 @@ export const LoginPage = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-2 md:p-6 lg:p-12">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-2 md:p-6 lg:p-12">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden">
         {/* Left / Form with animation */}
         <AnimatedSection
@@ -59,7 +59,7 @@ export const LoginPage = () => {
               <h2 className="text-2xl font-bold">Sign in to your account</h2>
               <p className="text-sm text-gray-500 mt-2">
                 Don’t have an account?{" "}
-                <Link to="/signup" className="text-purple-600 font-semibold">
+                <Link to="/signup" className="text-[#0D9488] font-semibold hover:text-[#0F766E] transition-colors">
                   Create account
                 </Link>
               </p>
@@ -74,7 +74,7 @@ export const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent p-3"
+                  className="mt-1 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all p-3"
                   placeholder="you@company.com"
                 />
               </div>
@@ -87,7 +87,7 @@ export const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent p-3"
+                  className="mt-1 block w-full rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] focus:ring-2 focus:ring-[#0D9488]/30 focus:border-[#0D9488] outline-none transition-all p-3"
                   placeholder="Enter your password"
                 />
               </div>
@@ -97,18 +97,18 @@ export const LoginPage = () => {
                     type="checkbox"
                     checked={remember}
                     onChange={(e) => setRemember(e.target.checked)}
-                    className="form-checkbox h-4 w-4 text-purple-600"
+                    className="form-checkbox h-4 w-4 accent-[#0D9488]"
                   />
                   <span className="text-gray-600">Remember me</span>
                 </label>
-                <Link to="/forgot-password" className="text-purple-600">
+                <Link to="/forgot-password" className="text-[#0D9488] hover:text-[#0F766E] font-medium transition-colors">
                   Forgot password?
                 </Link>
               </div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#0D9488] text-white py-3 rounded-lg font-semibold hover:bg-[#0F766E] active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? "Signing in..." : "Sign in"}
               </button>
@@ -132,11 +132,11 @@ export const LoginPage = () => {
         {/* Right / Illustration with animation */}
         <AnimatedSection
           direction="right"
-          className="hidden md:flex md:w-1/2 bg-linear-to-br from-purple-700 via-indigo-700 to-black text-white p-10 items-center justify-center"
+          className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#0D9488] via-[#0D9488] to-[#0F766E] text-white p-10 items-center justify-center"
         >
           <div className="max-w-lg">
             <div className="mb-6">
-              <div className="bg-white/10 rounded-lg inline-flex p-3 mb-6">
+              <div className="bg-white/15 rounded-xl inline-flex p-3 mb-6 border border-white/20">
                 <svg
                   width="32"
                   height="32"
@@ -154,19 +154,19 @@ export const LoginPage = () => {
             </div>
             <ul className="space-y-4 mt-8 text-gray-200">
               <li className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                <span className="w-7 h-7 bg-[#5EEAD4]/20 border border-[#5EEAD4]/40 rounded-full flex items-center justify-center text-[#CCFBF1] text-sm font-bold">
                   ✓
                 </span>
                 <span>Intelligent task dependencies</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                <span className="w-7 h-7 bg-[#5EEAD4]/20 border border-[#5EEAD4]/40 rounded-full flex items-center justify-center text-[#CCFBF1] text-sm font-bold">
                   ✓
                 </span>
-                <span>Smart reminders & notifications</span>
+                <span>Smart reminders &amp; notifications</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                <span className="w-7 h-7 bg-[#5EEAD4]/20 border border-[#5EEAD4]/40 rounded-full flex items-center justify-center text-[#CCFBF1] text-sm font-bold">
                   ✓
                 </span>
                 <span>Universal access on all devices</span>

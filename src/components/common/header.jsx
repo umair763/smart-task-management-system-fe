@@ -53,16 +53,16 @@ export const Header = () => {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <header className="w-[98%] h-18 flex items-center px-4 md:px-8 rounded-3xl bg-[#006D77] mt-1 ml-2 mx-auto">
+    <header className="w-[98%] h-16 flex items-center px-4 md:px-8 rounded-2xl bg-white border border-[#E2E8F0] mt-2 ml-2 mx-auto shadow-sm">
       {/* Search bar */}
-      <div className="flex-1 flex items-center text-white font-extrabold text-xs md:text-2xl lg:text-2xl">
+      <div className="flex-1 flex items-center text-[#0F172A] font-bold text-xs md:text-xl lg:text-xl tracking-tight">
         <h1>Transform Chaos Into Clarity</h1>
       </div>
 
       {/* Notification bell */}
       <div className="flex items-center mx-4">
-        <button className="relative p-2 rounded-full hover:bg-[#DF5B28] cursor-pointer transition">
-          <Bell className="w-6 h-6 text-white" />
+        <button className="relative p-2 rounded-full hover:bg-[#F1F5F9] cursor-pointer transition-all duration-200">
+          <Bell className="w-5 h-5 text-[#475569]" />
           {/* Notification dot (optional) */}
           {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span> */}
         </button>
@@ -70,7 +70,7 @@ export const Header = () => {
 
       {/* User profile */}
       <div className="flex items-center gap-2 min-w-[180px] justify-end">
-        <div className="w-8 h-8 rounded-full border-2 border-[#ff5c1a] flex items-center justify-center overflow-hidden bg-[#5B2D88]">
+        <div className="w-9 h-9 rounded-full border-2 border-[#0D9488] flex items-center justify-center overflow-hidden bg-[#0D9488]">
           {profileImageUrl && !imgError ? (
             <img
               src={profileImageUrl}
@@ -86,9 +86,9 @@ export const Header = () => {
           )}
         </div>
         <div className="flex flex-col items-start justify-center leading-tight">
-          <span className="text-sm font-medium text-white">{displayName}</span>
+          <span className="text-sm font-semibold text-[#0F172A]">{displayName}</span>
           {displayTitle && (
-            <span className="text-[11px] text-white px-2 mt-0.5 border border-[#020202]/60 rounded-full p-0.5">
+            <span className="text-[10px] text-[#475569] px-2 py-0.5 mt-0.5 bg-[#F1F5F9] border border-[#E2E8F0] rounded-full font-medium">
               {displayTitle}
             </span>
           )}

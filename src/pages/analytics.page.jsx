@@ -230,9 +230,8 @@ export const AnalyticsPage = () => {
             {/* Export Button */}
             <button
               className="relative px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white 
-               bg-gradient-to-r from-blue-600 to-indigo-600 
-               hover:from-blue-700 hover:to-indigo-700 
-               active:scale-[0.98] transition-all shadow-md hover:shadow-lg"
+               bg-[#EA580C] hover:bg-[#C2410C]
+               active:scale-[0.98] transition-all duration-200 shadow-md hover:shadow-lg"
             >
               Export
             </button>
@@ -244,31 +243,31 @@ export const AnalyticsPage = () => {
           {statsCards.map((card, index) => (
             <div
               key={index}
-              className="bg-[#006D77] rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:shadow-lg transition-shadow"
+              className="bg-white border border-[#E2E8F0] border-l-4 border-l-[#0D9488] rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-2 sm:p-3 rounded-lg ${card.bgColor}`}>
                   <card.icon
-                    className={`w-5 h-5 sm:w-6 sm:h-6 ${card.color}`}
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-[#0D9488]"
                   />
                 </div>
               </div>
-              <h3 className="text-xs sm:text-sm font-medium text-gray-100 mb-2">
+              <h3 className="text-xs sm:text-sm font-medium text-[#475569] mb-2">
                 {card.title}
               </h3>
               <div className="flex items-end gap-2 mb-3">
-                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-100">
+                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0F172A]">
                   {card.isPercent
                     ? `${card.count}%`
                     : card.count.toString().padStart(2, "0")}
                 </span>
                 {!card.isPercent && (
-                  <span className="text-sm sm:text-base text-gray-100 mb-1">
+                  <span className="text-sm sm:text-base text-[#94A3B8] mb-1">
                     / {card.total}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-100">{card.description}</p>
+              <p className="text-xs text-[#94A3B8]">{card.description}</p>
             </div>
           ))}
         </div>
@@ -281,7 +280,7 @@ export const AnalyticsPage = () => {
               <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                 Task Performance Chart
               </h2>
-              <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <button className="text-xs sm:text-sm text-[#0D9488] hover:text-[#0F766E] font-medium transition-colors">
                 See Comparison Data
               </button>
             </div>
@@ -326,7 +325,7 @@ export const AnalyticsPage = () => {
               <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                 Project Travel
               </h2>
-              <button className="text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <button className="text-xs sm:text-sm text-[#0D9488] hover:text-[#0F766E] font-medium transition-colors">
                 Project Comparison Data
               </button>
             </div>
@@ -351,17 +350,17 @@ export const AnalyticsPage = () => {
                   type="monotone"
                   dataKey="completed"
                   stackId="1"
-                  stroke="#8B5CF6"
-                  fill="#8B5CF6"
-                  fillOpacity={0.6}
+                  stroke="#0D9488"
+                  fill="#0D9488"
+                  fillOpacity={0.5}
                 />
                 <Area
                   type="monotone"
                   dataKey="ongoing"
                   stackId="1"
-                  stroke="#3B82F6"
-                  fill="#3B82F6"
-                  fillOpacity={0.6}
+                  stroke="#0891B2"
+                  fill="#0891B2"
+                  fillOpacity={0.5}
                 />
                 <Area
                   type="monotone"
@@ -473,14 +472,14 @@ export const AnalyticsPage = () => {
                       key={`cell-${index}`}
                       fill={
                         index === 0
-                          ? "#3B82F6"
+                          ? "#0D9488"
                           : index === 1
-                          ? "#06B6D4"
+                          ? "#EA580C"
                           : index === 2
-                          ? "#FBBF24"
+                          ? "#0891B2"
                           : index === 3
-                          ? "#A855F7"
-                          : "#10B981"
+                          ? "#059669"
+                          : "#D97706"
                       }
                     />
                   ))}

@@ -21,7 +21,7 @@ const Preloader = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#d4a3f3] via-[#b5d6f5] to-[#e8c9f7]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-[#134E4A] via-[#0D9488] to-[#0F766E]"
           aria-label="Loading"
         >
           {/* SVG spinner container */}
@@ -48,14 +48,14 @@ const Preloader = () => {
                 >
                   <stop
                     offset="0%"
-                    stopColor="#4383b8"
+                    stopColor="#0D9488"
                     style={{
                       animation: `gradient1 ${animationDuration}s ease infinite`,
                     }}
                   />
                   <stop
                     offset="100%"
-                    stopColor="#4aa06c"
+                    stopColor="#EA580C"
                     style={{
                       animation: `gradient2 ${animationDuration}s ease infinite`,
                     }}
@@ -95,8 +95,8 @@ const Preloader = () => {
                 clipPath="url(#rects)"
               />
             </svg>
-            <p className="text-center text-[#5B2D88] font-semibold text-xl mt-18 animate-pulse">
-              Loading SocialSight...
+            <p className="text-center text-[#CCFBF1] font-semibold text-xl mt-18 animate-pulse">
+              Loading SmartTask...
             </p>
           </div>
 
@@ -158,25 +158,25 @@ const Preloader = () => {
 
             @keyframes gradient1 {
               0% {
-                stop-color: #4383b8;
+                stop-color: #0D9488;
               }
               50% {
-                stop-color: #8013b9;
+                stop-color: #5EEAD4;
               }
               100% {
-                stop-color: #4383b8;
+                stop-color: #0D9488;
               }
             }
 
             @keyframes gradient2 {
               0% {
-                stop-color: #4aa06c;
+                stop-color: #EA580C;
               }
               50% {
-                stop-color: #b22358;
+                stop-color: #FED7AA;
               }
               100% {
-                stop-color: #4aa06c;
+                stop-color: #EA580C;
               }
             }
           `}</style>

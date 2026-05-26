@@ -52,8 +52,9 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 bg-[#006D77] text-[#020202] rounded-tr-3xl rounded-br-3xl
+      className={`fixed top-0 left-0 z-40 bg-[#0D9488] text-white rounded-tr-3xl rounded-br-3xl
                   h-screen p-4 flex flex-col transition-[width] duration-300 ease-in-out
+                  shadow-xl shadow-[#0D9488]/30
                   ${collapsed ? "w-17" : "w-60"}`}
     >
       {/* Collapse button with SmartTask text */}
@@ -65,7 +66,7 @@ export const Sidebar = () => {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#1A7F88] mt-2 text-white transition flex items-center justify-center"
+          className="p-2 rounded-full mx-auto cursor-pointer hover:bg-[#0D9488]/30 mt-2 text-[#CCFBF1] transition-all duration-200 flex items-center justify-center"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
@@ -78,17 +79,19 @@ export const Sidebar = () => {
 
       {/* Navigation */}
       <nav
-        className="flex-1 flex flex-col gap-2 font-bold"
-        style={{ fontFamily: "Proza Libre, sans-serif" }}
+        className="flex-1 flex flex-col gap-1 font-semibold"
       >
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 p-2 rounded transition
-              ${isActive ? "bg-[#1A7F88] text-white" : "text-white"}
-              hover:bg-[#1A7F88] hover:text-white`
+              `flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200
+                ${isActive
+                  ? `bg-[#0D9488]/30 text-[#CCFBF1] border-l-2 border-[#5EEAD4] pl-[calc(0.625rem-2px)]`
+                  : `text-[#F8FAFC] hover:bg-[#0F766E] hover:text-white border-l-2 border-transparent pl-[calc(0.625rem-2px)]`
+                }
+              }`
             }
           >
             {item.icon}
@@ -103,7 +106,7 @@ export const Sidebar = () => {
       {/* Optional footer */}
 
       {/* Optional footer */}
-      <div className="text-xs text-white font-semibold">
+      <div className="text-xs text-[#5EEAD4]/70 font-medium">
         {collapsed ? "ST" : "SmartTask © 2025"}
       </div>
     </aside>
@@ -132,9 +135,9 @@ function LogoutButton({ collapsed }) {
 
   return (
     <button
-      className={`cursor-pointer flex items-center gap-3 w-full p-2 rounded transition mb-2
+      className={`cursor-pointer flex items-center gap-3 w-full p-2.5 rounded-xl transition-all duration-200 mb-2
         ${collapsed ? "justify-center" : ""}
-        text-white hover:bg-[#1A7F88] hover:text-white bg-transparent`}
+        text-red-800 hover:bg-[#DC2626]/20 hover:text-[#F87171] bg-transparent border-l-2 border-transparent`}
       onClick={handleLogout}
     >
       <LogOut className="w-5 h-5" />
